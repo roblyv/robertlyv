@@ -523,7 +523,7 @@ html, body {
   <section class="slide slide-hero">
     <div class="particles" id="particles"></div>
     <div class="hero-content">
-      <img src="images/headshot.png" alt="Rob Lyv" style="width:200px;height:200px;border-radius:50%;object-fit:cover;border:3px solid var(--teal);margin-bottom:1.2rem;box-shadow:0 4px 24px rgba(13,148,136,.35);opacity:0;animation:fadeUp .8s .1s forwards;">
+      <img src="images/headshot.png" alt="Rob Lyv" style="width:200px;height:200px;border-radius:50%;object-fit:cover;border:3px solid var(--teal);margin-bottom:1.2rem;box-shadow:0 4px 24px rgba(13,148,136,.35);opacity:0;animation:fadeUp .8s .1s forwards;image-rendering:high-quality;-webkit-image-rendering:high-quality;">
       <div class="hero-eyebrow">Leader · Builder · Connector</div>
       <h1 class="hero-title">I don't just show up.<br>I <span class="lyv">Lyv</span> it.</h1>
       <p class="hero-sub">I build things that matter: <strong>teams, technology, and experiences worth having.</strong> 21 years of making complex problems look easy, one deliberate move at a time.</p>
@@ -929,7 +929,11 @@ function openPhoto(src, title) {
   document.getElementById('lb-title').textContent = title;
   document.getElementById('lb-desc').textContent = '';
   const wrap = document.getElementById('lb-img-wrap');
-  wrap.innerHTML = `<img src="${src}" alt="${title}" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:4px;">`;
+  wrap.style.aspectRatio = 'unset';
+  wrap.style.height = 'auto';
+  wrap.innerHTML = `<img src="${src}" alt="${title}" style="width:100%;height:auto;max-height:80vh;object-fit:contain;border-radius:4px;">`;
+  const box = document.querySelector('.lightbox-box');
+  box.style.maxWidth = '90vw';
   document.getElementById('lightbox').classList.add('open');
 }
 
@@ -946,6 +950,11 @@ function openLightbox(id) {
 }
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
+  const box = document.querySelector('.lightbox-box');
+  box.style.maxWidth = '';
+  const wrap = document.getElementById('lb-img-wrap');
+  wrap.style.aspectRatio = '';
+  wrap.style.height = '';
 }
 function closeLightboxOutside(e) {
   if (e.target === document.getElementById('lightbox')) closeLightbox();
