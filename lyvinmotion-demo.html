@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lyv in Motion — Demo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; width: 100%; overflow: hidden; background: #080808; }
+</style>
+</head>
+<body>
+<div id="launch-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#080808;text-align:center;padding:40px 20px;">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,10vw,96px);font-weight:900;line-height:1;letter-spacing:.05em;color:#fff;margin-bottom:8px;">LYV IN <span style="color:#FF4500;">MOTION</span></div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.25em;color:#444;margin-bottom:48px;text-transform:uppercase;">6-Week Training Program</div>
+  <button onclick="document.getElementById('launch-screen').style.display='none';document.getElementById('app-root').style.display='flex';"
+    style="background:#FF4500;color:#fff;border:none;padding:18px 48px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:.15em;cursor:pointer;text-transform:uppercase;transition:transform .1s,box-shadow .2s;box-shadow:0 0 40px rgba(255,69,0,.25);"
+    onmouseover="this.style.transform='scale(1.03)';this.style.boxShadow='0 0 60px rgba(255,69,0,.4)'"
+    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 40px rgba(255,69,0,.25)'">
+    View Live Demo →
+  </button>
+</div>
+<div id="app-root" style="display:none;flex-direction:column;height:100vh;"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const DAY_COLORS = ['#FF4500','#FFB800','#FF8C00','#00AAFF','#A855F7','#FF69B4','#4CAF50'];
+
+const CARDIO = {
+  d1:['20 min easy','22–25 min easy','25 min easy','25–28 min easy','28–30 min easy','30 min easy'],
+  d2:['45 min easy','45–50 min easy','50 min easy','50 min easy','50–55 min easy','55–60 min easy'],
+  d3:['1 mi easy · 0.5 mi tempo · 0.5 mi easy','1 mi easy · 1 mi tempo','1 mi easy · 1.25 mi tempo','1 mi easy · 3x(3 min faster, 2 min easy)','1 mi easy · 1.5–2 mi tempo','1 mi easy · 4x(2 min fast, 2 min easy)'],
+  d4:['50 min moderate','55 min moderate','60 min moderate','60 min + 2x5 min push','65 min + 3x5 min push','70 min + 3–4x5 min push'],
+  d5:['15–20 min easy (or skip)','20 min easy','20–25 min easy','20 min recovery','20–25 min easy','20 min recovery or skip'],
+  d6:['60 min steady','75 min steady','90 min steady','90 min steady','105 min steady','120 min steady'],
+  d7:['2 miles easy','2.5 miles easy','3 miles easy','3.5 miles easy','4 miles easy','4–5 miles easy'],
+};
+
+const PROGRAM = { days: [
+  {id:1,label:'CHEST + TRICEPS',sub:'Chest · Triceps · Easy Run',
+   warmup:['Light Bike — 2 min','Arm Circles — 20','Band Pull Aparts — 20',"World's Greatest Stretch — 5 each side",'Pushups — 10'],
+   phases:{
+    A:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Bench Press',sets:3,reps:'8'},{name:'Pushups',sets:3,reps:'12'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Incline Dumbbell Press',sets:3,reps:'10'},{name:'Tricep Rope Pushdown',sets:3,reps:'12'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Chest Fly',sets:3,reps:'12'},{name:'Overhead DB Tricep Extension',sets:3,reps:'12'}]},
+      {name:'CARDIO',exercises:[{name:'Easy Run',sets:1,reps:'__D1__'}]},
+      {name:'CORE',exercises:[{name:'Plank',sets:3,reps:'45 sec'}]},
+    ],stretch:"Deep Squat Hold 45s · Hip Flexor 30s each side · Hamstring 30s · Child's Pose 45s · Ankle Mobility Rocks 10 each side"},
+    B:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Barbell Bench Press',sets:4,reps:'6'},{name:'Decline Pushups',sets:3,reps:'12'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Incline DB Press',sets:3,reps:'8'},{name:'Weighted Dips',sets:3,reps:'10'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Cable Fly',sets:3,reps:'12'},{name:'Skull Crushers',sets:3,reps:'10'}]},
+      {name:'CARDIO',exercises:[{name:'Easy Run',sets:1,reps:'__D1__'}]},
+      {name:'CORE',exercises:[{name:'Plank',sets:3,reps:'60 sec'}]},
+    ],stretch:"Deep Squat Hold 45s · Hip Flexor 30s each side · Hamstring 30s · Child's Pose 45s · Ankle Mobility Rocks 10 each side"},
+  }},
+  {id:2,label:'LEGS + BIKE',sub:'Legs · Easy Bike',
+   warmup:['Light Bike — 2 min','Leg Swings — 15 each side','Bodyweight Squats — 15','Glute Bridges — 12',"World's Greatest Stretch — 5 each side"],
+   phases:{
+    A:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Squats',sets:3,reps:'8'},{name:'Standing Calf Raises',sets:3,reps:'15'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Romanian Deadlift',sets:3,reps:'10'},{name:'Walking Lunges',sets:3,reps:'10 each leg'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Step Ups',sets:3,reps:'10 each leg'},{name:'Hamstring Curl',sets:3,reps:'12'}]},
+      {name:'CARDIO',exercises:[{name:'Easy Bike Ride',sets:1,reps:'__D2__'}]},
+      {name:'CORE',exercises:[{name:'Deadbugs',sets:3,reps:'12'}]},
+    ],stretch:'Hip Flexor Stretch 30s each side · Hamstring Stretch 30s each side · Deep Squat Hold 45s · Ankle Mobility Rocks 10 each side · Glute Stretch 30s'},
+    B:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Front Squat',sets:3,reps:'8'},{name:'Calf Raises',sets:3,reps:'15'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Romanian Deadlift',sets:3,reps:'8'},{name:'Bulgarian Split Squat',sets:3,reps:'10 each leg'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Step Ups',sets:3,reps:'10 each leg'},{name:'Weighted Glute Bridge',sets:3,reps:'12'}]},
+      {name:'CARDIO',exercises:[{name:'Easy Bike Ride',sets:1,reps:'__D2__'}]},
+      {name:'CORE',exercises:[{name:'Deadbugs',sets:3,reps:'15'}]},
+    ],stretch:'Hip Flexor Stretch + Reach 40s each side · Hamstring Pulses 12 each side · Deep Squat Rocking 10 · Ankle Mobility Rocks 12 each side · Single-Leg Balance 30s each side'},
+  }},
+  {id:3,label:'CONDITIONING',sub:'Conditioning · Tempo Run',
+   warmup:['Light Jog — 2 min','Jumping Jacks — 25','High Knees — 20',"World's Greatest Stretch",'Bodyweight Squats'],
+   phases:{
+    A:{supersets:[
+      {name:'CIRCUIT × 3 ROUNDS',exercises:[{name:'Battle Rope',sets:3,reps:'30 sec'},{name:'Kettlebell Swings',sets:3,reps:'15'},{name:'Burpees',sets:3,reps:'10'},{name:'Mountain Climbers',sets:3,reps:'20'}]},
+      {name:'CARDIO',exercises:[{name:'Tempo Run',sets:1,reps:'__D3__'}]},
+      {name:'CORE',exercises:[{name:'Russian Twists',sets:3,reps:'20'}]},
+    ],stretch:"Standing Calf Stretch 30s · Seated Hamstring Stretch 30s · Hip Flexor Stretch 30s · Child's Pose 45s · Deep Squat Hold 45s"},
+    B:{supersets:[
+      {name:'CIRCUIT × 4 ROUNDS',exercises:[{name:'Battle Rope',sets:4,reps:'30 sec'},{name:'Kettlebell Swings',sets:4,reps:'20'},{name:'Burpees',sets:4,reps:'12'},{name:'Mountain Climbers',sets:4,reps:'30'}]},
+      {name:'CARDIO',exercises:[{name:'Tempo Run or Intervals',sets:1,reps:'__D3__'}]},
+      {name:'CORE',exercises:[{name:'Russian Twists',sets:3,reps:'25'}]},
+    ],stretch:"Calf Stretch 40s · Hamstring Pulses 12 · Hip Flexor Stretch 40s · Child's Pose 60s · Deep Squat Rocking 10"},
+  }},
+  {id:4,label:'BACK + BICEPS',sub:'Back · Biceps · Moderate Bike',
+   warmup:['Light Bike — 2 min','Band Pull Aparts — 20','Arm Circles — 20',"World's Greatest Stretch",'Dead Hang — 20 sec'],
+   phases:{
+    A:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Pull-ups',sets:3,reps:'max'},{name:'Bent Over Row',sets:3,reps:'10'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Lat Pulldown',sets:3,reps:'10'},{name:'Dumbbell Curl',sets:3,reps:'12'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Face Pull',sets:3,reps:'15'},{name:'Hammer Curl',sets:3,reps:'12'}]},
+      {name:'CARDIO',exercises:[{name:'Moderate Bike Ride',sets:1,reps:'__D4__'}]},
+      {name:'CORE',exercises:[{name:'Hanging Knee Raises',sets:3,reps:'12'}]},
+    ],stretch:"Lat Stretch 30s · Child's Pose with Reach 45s · Thoracic Rotations 10 each side · Band Pull Apart Hold 20s · Neck Stretch 20s"},
+    B:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Pull-ups',sets:4,reps:'max'},{name:'Barbell Row',sets:3,reps:'8'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Lat Pulldown',sets:3,reps:'10'},{name:'EZ Bar Curl',sets:3,reps:'10'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Face Pull',sets:3,reps:'15'},{name:'Hammer Curl',sets:3,reps:'12'}]},
+      {name:'CARDIO',exercises:[{name:'Moderate Bike Ride',sets:1,reps:'__D4__'}]},
+      {name:'CORE',exercises:[{name:'Hanging Leg Raises',sets:3,reps:'12'}]},
+    ],stretch:"Lat Stretch 40s · Child's Pose with Reach 60s · Thoracic Rotations 12 each side · Band Pull Apart Hold 25s · Neck Stretch 25s"},
+  }},
+  {id:5,label:'SHOULDERS + CORE',sub:'Shoulders · Core · Optional Run',
+   warmup:['Light Bike — 2 min','Arm Circles — 20','Band Pull Aparts — 20',"World's Greatest Stretch",'Pushups — 10'],
+   phases:{
+    A:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Overhead Press',sets:3,reps:'8'},{name:'Lateral Raises',sets:3,reps:'12'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Rear Delt Fly',sets:3,reps:'12'},{name:'Front Raises',sets:3,reps:'10'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Shrugs',sets:3,reps:'12'},{name:'Plank Shoulder Taps',sets:3,reps:'20'}]},
+      {name:'CORE FINISHER',exercises:[{name:'Bicycle Crunch',sets:3,reps:'20'}]},
+      {name:'CARDIO (OPTIONAL)',exercises:[{name:'Easy Run',sets:1,reps:'__D5__'}]},
+    ],stretch:"Shoulder Stretch 30s · Cross-Body Stretch 30s · Thoracic Rotation 10 each side · Child's Pose 45s · Deep Squat Hold 45s"},
+    B:{supersets:[
+      {name:'SUPERSET 1',exercises:[{name:'Overhead Press',sets:4,reps:'6'},{name:'Lateral Raises',sets:3,reps:'15'}]},
+      {name:'SUPERSET 2',exercises:[{name:'Arnold Press',sets:3,reps:'10'},{name:'Rear Delt Fly',sets:3,reps:'12'}]},
+      {name:'SUPERSET 3',exercises:[{name:'Shrugs',sets:3,reps:'12'},{name:'Plank Shoulder Taps',sets:3,reps:'24'}]},
+      {name:'CORE FINISHER',exercises:[{name:'Toe Touches',sets:3,reps:'20'}]},
+      {name:'CARDIO (OPTIONAL)',exercises:[{name:'Easy Run or Intervals',sets:1,reps:'__D5__'}]},
+    ],stretch:"Shoulder Stretch 40s · Cross-Body Stretch 40s · Thoracic Rotation 12 each side · Child's Pose 60s · Single-Leg Balance 30s each side"},
+  }},
+  {id:6,label:'LONG BIKE RIDE',sub:'Long Bike · Endurance',
+   warmup:['Easy Spin — 5–10 min'],
+   phases:{
+    A:{supersets:[
+      {name:'CARDIO',exercises:[{name:'Long Bike Ride',sets:1,reps:'__D6__'}]},
+      {name:'CORE (OPTIONAL)',exercises:[{name:'Side Plank',sets:3,reps:'30 sec each side'}]},
+    ],notes:['First 15 min — easy spin','Middle — steady effort','Last 10–15 min — controlled finish'],
+    finish:'Easy Spin — 5–10 min cooldown',stretch:"Hip Flexor Stretch 30s each side · Quad Stretch 30s each side · Hamstring Stretch 30s · Calf Stretch 30s · Child's Pose 45s"},
+    B:{supersets:[
+      {name:'CARDIO',exercises:[{name:'Long Bike Ride',sets:1,reps:'__D6__'}]},
+      {name:'CORE (OPTIONAL)',exercises:[{name:'Side Plank',sets:3,reps:'30 sec each side'}]},
+    ],notes:['First 15 min — easy spin','Middle — steady effort','Optional pushes every 15–20 min','Last 10–15 min — controlled finish'],
+    finish:'Easy Spin — 5–10 min cooldown',stretch:"Hip Flexor Stretch + Reach 40s · Quad Stretch 40s · Hamstring Pulses 12 · Calf Stretch 40s · Child's Pose 60s"},
+  }},
+  {id:7,label:'LONG RUN + RECOVERY',sub:'Long Run · Recovery · Mobility',
+   warmup:['Light Walk — 2 min','Leg Swings — 15 each side','High Knees — 20',"World's Greatest Stretch",'Bodyweight Squats'],
+   phases:{
+    A:{supersets:[{name:'CARDIO',exercises:[{name:'Long Run',sets:1,reps:'__D7__'}]}],
+    finish:null,stretch:"Hamstring Stretch 30s · Calf Stretch 30s · Hip Flexor Stretch 30s · Glute Stretch 30s · Deep Squat Hold 45s"},
+    B:{supersets:[{name:'CARDIO',exercises:[{name:'Long Run',sets:1,reps:'__D7__'}]}],
+    finish:null,stretch:"Hamstring Pulses 12 · Calf Stretch 40s · Hip Flexor Stretch 40s · Glute Stretch 40s · Deep Squat Rocking 10"},
+  }},
+]};
+
+const CARDIO_TOKENS = {'__D1__':'d1','__D2__':'d2','__D3__':'d3','__D4__':'d4','__D5__':'d5','__D6__':'d6','__D7__':'d7'};
+
+function getDayData(di, w) {
+  const day = PROGRAM.days[di];
+  const phase = w <= 3 ? 'A' : 'B';
+  const wi = w - 1;
+  const pd = day.phases[phase];
+  const supersets = pd.supersets.map(ss => ({
+    ...ss,
+    exercises: ss.exercises.map(ex => {
+      let reps = ex.reps;
+      for (const [tok, key] of Object.entries(CARDIO_TOKENS)) {
+        if (reps === tok) { reps = CARDIO[key][wi]; break; }
+      }
+      return { ...ex, reps };
+    })
+  }));
+  return { ...day, ...pd, supersets, color: DAY_COLORS[di] };
+}
+
+function wKey(w, d, n) { return `wt_${n.replace(/\s+/g,'_')}_w${w}_d${d}`; }
+function noteKey(w, d, n) { return `note_${n.replace(/\s+/g,'_')}_w${w}_d${d}`; }
+function setKey(w,d,si,ei,i) { return `w${w}_d${d}_s${si}_e${ei}_i${i}`; }
+function manualKey(w,d) { return `mc_w${w}_d${d}`; }
+function fmtTimer(s) { return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+
+function buildDemoData() {
+  const checked = {}, weights = {}, manual = {};
+
+  // Check off every set for completed days: W1 all 7 days, W2 all 7 days, W3 days 0-3
+  const completedDays = [];
+  for (let w = 1; w <= 2; w++) for (let d = 0; d < 7; d++) completedDays.push([w,d]);
+  for (let d = 0; d < 4; d++) completedDays.push([3,d]);
+
+  completedDays.forEach(([w,d]) => {
+    const dd = getDayData(d, w);
+    dd.supersets.forEach((ss, si) => {
+      ss.exercises.forEach((ex, ei) => {
+        for (let i = 0; i < ex.sets; i++) {
+          checked[setKey(w,d,si,ei,i)] = true;
+        }
+      });
+    });
+  });
+
+  const sampleWeights = [
+    [1,0,'Bench Press',135],[1,0,'Incline Dumbbell Press',40],[1,0,'Chest Fly',30],[1,0,'Plank','bw'],
+    [1,1,'Squats',115],[1,1,'Romanian Deadlift',95],[1,1,'Standing Calf Raises',35],
+    [1,3,'Pull-ups','bw'],[1,3,'Bent Over Row',85],[1,3,'Dumbbell Curl',30],[1,3,'Hammer Curl',25],
+    [1,4,'Overhead Press',75],[1,4,'Lateral Raises',15],[1,4,'Rear Delt Fly',15],[1,4,'Shrugs',50],
+    [2,0,'Bench Press',145],[2,0,'Incline Dumbbell Press',45],[2,0,'Chest Fly',32.5],
+    [2,1,'Squats',125],[2,1,'Romanian Deadlift',105],[2,1,'Standing Calf Raises',35],
+    [2,3,'Pull-ups','bw'],[2,3,'Bent Over Row',95],[2,3,'Dumbbell Curl',30],[2,3,'Hammer Curl',27.5],
+    [2,4,'Overhead Press',80],[2,4,'Lateral Raises',17.5],[2,4,'Rear Delt Fly',17.5],[2,4,'Shrugs',55],
+    [3,0,'Bench Press',155],[3,0,'Incline Dumbbell Press',50],[3,0,'Chest Fly',35],
+    [3,1,'Squats',135],[3,1,'Romanian Deadlift',115],
+    [3,3,'Pull-ups','bw'],[3,3,'Bent Over Row',100],[3,3,'Dumbbell Curl',32.5],
+    [3,4,'Overhead Press',85],[3,4,'Lateral Raises',20],
+  ];
+
+  sampleWeights.forEach(([w,d,name,val]) => {
+    weights[wKey(w,d,name)] = String(val);
+  });
+
+  checked[setKey(3,4,0,0,0)] = true;
+  checked[setKey(3,4,0,0,1)] = true;
+  checked[setKey(3,4,0,1,0)] = true;
+
+  return { checked, weights, notes:{}, manual, sessionEdits:{} };
+}
+
+const DEMO = buildDemoData();
+
+const css = `
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap');
+  :root{--bg:#080808;--surface:#0e0e0e;--surface2:#141414;--border:#1e1e1e;--border2:#282828;--text:#e0e0e0;--text2:#888;--text3:#444;--text4:#2a2a2a;--accent:#FF4500;}
+  .lim *{box-sizing:border-box;margin:0;padding:0;font-family:'Barlow Condensed',sans-serif;}
+  .lim{background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;width:100%;overflow:hidden;letter-spacing:.02em;}
+  .lim ::-webkit-scrollbar{width:3px;height:3px}.lim ::-webkit-scrollbar-track{background:#111}.lim ::-webkit-scrollbar-thumb{background:#2a2a2a}
+  .lhdr{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+  .lhdr h1{font-size:19px;font-weight:900;color:#fff;line-height:1;letter-spacing:.05em}
+  .lhdr .lsub{font-size:9px;color:var(--text3);letter-spacing:.15em;margin-bottom:2px}
+  .lhdr-right{display:flex;align-items:center;gap:10px}
+  .lhdr-name{font-size:11px;font-weight:800;color:#fff;letter-spacing:.1em;text-align:right;margin-bottom:3px}
+  .lhdr-btns{display:flex;gap:4px;justify-content:flex-end}
+  .lhdr-btn{background:none;border:1px solid var(--border2);color:var(--text3);padding:3px 8px;font-family:inherit;font-size:9px;letter-spacing:.08em}
+  .ltimer{display:flex;align-items:center;gap:8px}
+  .ltimer-time{font-size:22px;font-weight:900;line-height:1;transition:color .3s;min-width:48px;text-align:right}
+  .ltimer-time.running{color:#FFB800}.ltimer-time.urgent{color:var(--accent);animation:lpulse 1s infinite}
+  .ltimer-btns{display:flex;flex-direction:column;gap:2px}
+  .ltbtn{cursor:pointer;background:#0a0a0a;border:1px solid var(--border2);color:var(--text3);padding:2px 6px;font-family:inherit;font-size:9px}
+  .ltbtn.stop{color:var(--accent);border-color:#FF450033}
+  @keyframes lpulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .lmnav{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+  .lwtabs{display:flex;gap:3px;overflow-x:auto}.lwtabs::-webkit-scrollbar{display:none}
+  .lwtab{flex-shrink:0;padding:5px 9px;font-size:10px;font-weight:800;letter-spacing:.07em;color:var(--text3);border:1px solid var(--border2);cursor:pointer;background:none;transition:all .12s}
+  .lwtab.active{color:#fff;border-color:var(--accent);background:#FF450018}
+  .ldtabs{display:flex;gap:3px;overflow-x:auto}.ldtabs::-webkit-scrollbar{display:none}
+  .ldtab{flex-shrink:0;padding:5px 9px;font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--text3);border:1px solid var(--border2);cursor:pointer;background:none;white-space:nowrap;transition:all .12s}
+  .ldtab.active{color:#fff;border-color:var(--accent);background:#FF450018}
+  .ldtab.done{color:#fff;background:#00C896;border-color:#1a5c2a}
+  .ldtab.active.done{background:#00a87e;border-color:#1a5c2a;outline:2px solid #fff;outline-offset:-3px}
+  .lmtimer{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+  .lmt-time{font-size:24px;font-weight:900;line-height:1;transition:color .3s}
+  .lmt-time.running{color:#FFB800}.lmt-time.urgent{color:var(--accent);animation:lpulse 1s infinite}
+  .lmt-btns{display:flex;gap:4px}
+  .lmtbtn{cursor:pointer;background:#0a0a0a;border:1px solid var(--border2);color:var(--text3);padding:3px 8px;font-family:inherit;font-size:10px}
+  .lmtbtn.stop{color:var(--accent);border-color:#FF450033}
+  .lbody{display:flex;flex:1;overflow:hidden}
+  .lsidebar{width:196px;min-width:196px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0}
+  .lcontent{flex:1;overflow-y:auto;padding:16px 14px 40px}
+  .lhm{padding:10px 10px 12px}
+  .lhm-t{font-size:8px;color:var(--text3);letter-spacing:.15em;margin-bottom:7px}
+  .lhm-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .lhm-c{aspect-ratio:1;border:1px solid #ccc;cursor:pointer;position:relative;background:#fff;transition:all .12s}
+  .lhm-c.act{border:2px solid var(--accent)!important}
+  .lhm-c.done{border-color:transparent}
+  .lhm-l{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800}
+  .lwsec{border-bottom:1px solid var(--border)}
+  .lwh{padding:7px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .lwh:hover{background:var(--surface2)}
+  .ldi{padding:5px 12px 5px 16px;cursor:pointer;display:flex;align-items:center;gap:6px;border-left:2px solid transparent;transition:background .12s}
+  .ldi:hover{background:var(--surface2)}
+  .ldi.active{background:var(--surface2);border-left-color:var(--accent)}
+  .ldot{width:6px;height:6px;flex-shrink:0}
+  .ldnm{font-size:10px;font-weight:700;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ldi.active .ldnm{color:#fff}
+  .ldh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .lbadge{width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;border:2px solid;flex-shrink:0}
+  .lpbw{height:2px;background:var(--surface2);margin-bottom:16px}
+  .lpb{height:100%;transition:width .4s}
+  .lmkb{cursor:pointer;background:#fff;color:#000;border:none;padding:7px 14px;font-family:inherit;font-size:10px;font-weight:800;letter-spacing:.1em;margin-bottom:14px}
+  .lumkb{cursor:pointer;background:none;border:1px solid var(--border2);color:var(--text3);padding:7px 14px;font-family:inherit;font-size:10px;letter-spacing:.1em;margin-bottom:14px}
+  .lslbl{font-size:9px;color:var(--text3);letter-spacing:.15em;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .lslbl::after{content:'';flex:1;height:1px;background:var(--border)}
+  .lwu{background:var(--surface);border:1px solid var(--border);padding:9px 13px;margin-bottom:16px}
+  .lwui{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid var(--border)}
+  .lwui:last-child{border-bottom:none}
+  .lwud{width:3px;height:3px;background:var(--border2);flex-shrink:0}
+  .lwut{font-family:'Barlow',sans-serif;font-size:12px;color:var(--text2)}
+  .lssb{margin-bottom:16px}
+  .lsstr{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .lsst{font-size:9px;font-weight:800;letter-spacing:.13em}
+  .lssl{flex:1;height:1px}
+  .lexc{background:var(--surface);border:1px solid var(--border);padding:10px 12px;margin-bottom:6px}
+  .lext{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .lexn{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
+  .lexm{font-family:'Barlow',sans-serif;font-size:10px;color:var(--text3);margin-top:1px}
+  .lexc2{display:flex;align-items:center;gap:5px}
+  .lwi{background:#0a0a0a;border:1px solid var(--border2);color:var(--text2);font-family:'Barlow',sans-serif;font-size:11px;padding:3px 7px;width:68px;outline:none}
+  .lnb{cursor:pointer;background:#0a0a0a;border:1px solid var(--border2);color:var(--text3);padding:3px 7px;font-family:inherit;font-size:9px;letter-spacing:.07em}
+  .lnb.on{color:var(--accent);border-color:#FF450044}
+  .prbdg{font-size:8px;font-weight:800;padding:2px 5px;background:#FFB80022;color:#FFB800;border:1px solid #FFB80044}
+  .lsr{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+  .lsb{width:38px;height:38px;border:1.5px solid var(--border2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;user-select:none;transition:all .12s;flex-shrink:0}
+  .lsb.done{border-color:var(--sa);background:color-mix(in srgb,var(--sa) 12%,transparent)}
+  .lsl{font-size:8px;color:var(--text4)}.lsb.done .lsl{color:var(--sa)}
+  .lsn{font-size:14px;font-weight:900;color:var(--text4);line-height:1}.lsb.done .lsn{color:var(--sa)}
+  .lrb{cursor:pointer;background:#0a0a0a;border:1px solid var(--border2);color:var(--text3);padding:0 9px;height:38px;font-family:inherit;font-size:9px;letter-spacing:.07em;flex-shrink:0}
+  .lnta{width:100%;background:#0a0a0a;border:1px solid var(--border2);color:var(--text2);font-family:'Barlow',sans-serif;font-size:11px;padding:6px 9px;outline:none;resize:none;margin-top:6px}
+  .lfb{border:1px solid var(--border);background:var(--surface);padding:10px 13px;display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+  .lcb{padding:13px;border:1px solid;text-align:center;margin-top:14px}
+  .ltabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:16px}
+  .ltab{cursor:pointer;padding:7px 15px;font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--text3);border-bottom:2px solid transparent}
+  .ltab.active{color:#fff;border-bottom-color:var(--accent)}
+  .lsg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+  .lsc{background:var(--surface);border:1px solid var(--border);padding:13px}
+  .lsv{font-size:26px;font-weight:900;line-height:1}
+  .lsl2{font-size:9px;color:var(--text3);letter-spacing:.13em;margin-top:3px}
+  .lprl{background:var(--surface);border:1px solid var(--border)}
+  .lprr{display:flex;justify-content:space-between;align-items:center;padding:7px 13px;border-bottom:1px solid var(--border)}
+  .lprr:last-child{border-bottom:none}
+  .lct{width:100%;border-collapse:collapse}
+  .lct th{font-size:8px;letter-spacing:.1em;color:var(--text3);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border)}
+  .lct td{padding:5px 8px;border-bottom:1px solid var(--border);font-size:11px}
+  .lct tr:last-child td{border-bottom:none}
+  .demo-badge{position:fixed;bottom:12px;right:12px;background:#FF450022;border:1px solid #FF450055;color:var(--accent);padding:6px 12px;font-size:9px;font-weight:800;letter-spacing:.15em;z-index:999}
+`;
+
+function App() {
+  const [aw, setAw] = useState(3);
+  const [ad, setAd] = useState(4);
+  const [tab, setTab] = useState('workout');
+  const [checked, setChecked] = useState(DEMO.checked);
+  const [weights, setWeights] = useState(DEMO.weights);
+  const [notes, setNotes] = useState(DEMO.notes);
+  const [manual, setManual] = useState(DEMO.manual);
+  const [openNote, setOpenNote] = useState(null);
+  const [timerSec, setTimerSec] = useState(90);
+  const [timerOn, setTimerOn] = useState(false);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    clearInterval(timerRef.current);
+    if (timerOn && timerSec > 0) {
+      timerRef.current = setInterval(() => setTimerSec(p => { if(p<=1){setTimerOn(false);return 0;} return p-1; }), 1000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timerOn]);
+
+  const startTimer = (s) => { clearInterval(timerRef.current); setTimerSec(s); setTimerOn(true); };
+  const stopTimer = () => { clearInterval(timerRef.current); setTimerOn(false); };
+
+  const getPct = (w,d) => {
+    if(manual[manualKey(w,d)]) return 100;
+    const dd = getDayData(d,w);
+    let t=0,dn=0;
+    dd.supersets.forEach((ss,si)=>ss.exercises.forEach((ex,ei)=>{
+      for(let i=0;i<ex.sets;i++){t++;if(checked[setKey(w,d,si,ei,i)])dn++;}
+    }));
+    return t===0?0:Math.round(dn/t*100);
+  };
+
+  const getWkDone = (w) => PROGRAM.days.reduce((acc,_,di)=>acc+(getPct(w,di)===100?1:0),0);
+
+  const isPR = (w,di,exName) => {
+    const wt=parseFloat(weights[wKey(w,di,exName)]);
+    if(isNaN(wt)||wt<=0) return false;
+    for(let pw=1;pw<w;pw++){const p=parseFloat(weights[wKey(pw,di,exName)]);if(!isNaN(p)&&p>=wt)return false;}
+    return true;
+  };
+
+  const getBestPR = (di,exName) => {
+    let best=null;
+    for(let w=1;w<=6;w++){const wt=parseFloat(weights[wKey(w,di,exName)]);if(!isNaN(wt)&&wt>0){if(!best||wt>best.weight)best={weight:wt,week:w};}}
+    return best;
+  };
+
+  const getAllPRs = () => {
+    const prs={};
+    for(let w=1;w<=6;w++) PROGRAM.days.forEach((day,di)=>{
+      const dd=getDayData(di,w);
+      dd.supersets.forEach((ss)=>ss.exercises.forEach((ex)=>{
+        if(ex.sets===1&&(ss.name.includes('CARDIO')||ss.name.includes('OPTIONAL ACTIVITY')||ss.name.includes('STRUCTURE'))) return;
+        const k=wKey(w,di,ex.name),wt=parseFloat(weights[k]);
+        if(!isNaN(wt)&&wt>0){if(!prs[ex.name]||wt>prs[ex.name].weight)prs[ex.name]={name:ex.name,weight:wt,week:w,di};}
+      }));
+    });
+    return Object.values(prs).sort((a,b)=>a.di-b.di);
+  };
+
+  const dd = getDayData(ad,aw);
+  const pct = getPct(aw,ad);
+  const isManual = !!manual[manualKey(aw,ad)];
+  const phase = aw<=3?'FOUNDATION PHASE (WKS 1–3)':'PROGRESSION PHASE (WKS 4–6)';
+  const tcls = `ltimer-time${timerOn?(timerSec<=10?' urgent':' running'):''}`;
+  const mtcls = `lmt-time${timerOn?(timerSec<=10?' urgent':' running'):''}`;
+
+  const Heatmap = () => (
+    <div className="lhm">
+      <div className="lhm-t">6-WEEK OVERVIEW</div>
+      <div className="lhm-g">
+        {[1,2,3,4,5,6].map(w=>PROGRAM.days.map((_,d)=>{
+          const p=getPct(w,d),isAct=w===aw&&d===ad;
+          return <div key={`${w}-${d}`} className={`lhm-c${isAct?' act':''}${p===100?' done':''}`}
+            style={{background:p===100?DAY_COLORS[d]:'#fff',borderColor:isAct?'var(--accent)':p===100?DAY_COLORS[d]:'#ccc'}}
+            onClick={()=>{setAw(w);setAd(d);setTab('workout');}}>
+            <div className="lhm-l" style={{color:p===100?'#000':isAct?'var(--accent)':'#222',fontWeight:isAct?900:700}}>
+              {p===100?'✓':`W${w}D${d+1}`}
+            </div>
+          </div>;
+        }))}
+      </div>
+    </div>
+  );
+
+  const Sidebar = () => (
+    <div className="lsidebar">
+      <Heatmap/>
+      {[1,2,3,4,5,6].map(w=>(
+        <div className="lwsec" key={w}>
+          <div className="lwh" onClick={()=>{setAw(w);setAd(0);setTab('workout');}}>
+            <span style={{fontSize:10,fontWeight:800,letterSpacing:'.1em',color:w===aw?'#fff':'var(--text3)'}}>WEEK {w}</span>
+            <span style={{fontSize:9,color:'var(--text3)'}}>{getWkDone(w)} of 7</span>
+          </div>
+          {PROGRAM.days.map((day,di)=>{
+            const p=getPct(w,di),act=w===aw&&di===ad;
+            return <div key={di} className={`ldi${act?' active':''}`} onClick={()=>{setAw(w);setAd(di);setTab('workout');}}>
+              <div className="ldot" style={{background:p===100?DAY_COLORS[di]:p>0?DAY_COLORS[di]+'66':'var(--border2)'}}/>
+              <div className="ldnm">D{di+1} {day.label}</div>
+              {p>0&&<div style={{fontSize:9,color:'var(--text3)',marginLeft:'auto'}}>{p===100?'✓':p+'%'}</div>}
+            </div>;
+          })}
+        </div>
+      ))}
+    </div>
+  );
+
+  const MobileNav = () => (
+    <div className="lmnav">
+      <div className="lwtabs">
+        {[1,2,3,4,5,6].map(w=>(
+          <div key={w} className={`lwtab${w===aw?' active':''}`} onClick={()=>{setAw(w);setAd(0);}}>WEEK {w}</div>
+        ))}
+      </div>
+      <div className="ldtabs">
+        {PROGRAM.days.map((day,di)=>{
+          const p=getPct(aw,di),act=di===ad;
+          return <div key={di}
+            className={`ldtab${act?' active':''}${p===100?' done':''}`}
+            onClick={()=>{setAd(di);setTab('workout');}}>
+            D{di+1} · {day.label.split(' ')[0]}
+          </div>;
+        })}
+      </div>
+    </div>
+  );
+
+  const ExCard = ({ex,si,ei}) => {
+    const k=wKey(aw,ad,ex.name),nk=noteKey(aw,ad,ex.name);
+    const noteOn=openNote===nk,pr=isPR(aw,ad,ex.name);
+    const wval=weights[k]||'',note=notes[nk]||'';
+    const best=getBestPR(ad,ex.name);
+    return (
+      <div className="lexc">
+        <div className="lext">
+          <div style={{flex:1,minWidth:0}}>
+            <div className="lexn">{ex.name}{pr&&<span className="prbdg">⚡ PR</span>}</div>
+            <div className="lexm">{ex.sets} × {ex.reps}</div>
+          </div>
+          <div className="lexc2">
+            <input className="lwi" placeholder="lbs or kg" value={wval} onChange={e=>setWeights(p=>({...p,[k]:e.target.value}))} onClick={e=>e.stopPropagation()}/>
+            <button className={`lnb${noteOn?' on':''}`} onClick={()=>setOpenNote(noteOn?null:nk)}>NOTE</button>
+          </div>
+        </div>
+        <div className="lsr">
+          {Array.from({length:ex.sets}).map((_,i)=>{
+            const sk=setKey(aw,ad,si,ei,i),done=!!checked[sk];
+            return <div key={i} className={`lsb${done?' done':''}`} style={{'--sa':dd.color}}
+              onClick={()=>{setChecked(p=>({...p,[sk]:!p[sk]}));if(!done)startTimer(90);}}>
+              <div className="lsl">SET</div><div className="lsn">{done?'✓':i+1}</div>
+            </div>;
+          })}
+          <button className="lrb" onClick={()=>startTimer(90)}>REST 90s</button>
+        </div>
+        {best&&<div style={{marginTop:6,fontFamily:'Barlow,sans-serif',fontSize:11,fontStyle:'italic',color:'var(--text3)'}}>⚡ PR: {best.weight} lbs (Week {best.week})</div>}
+        {noteOn&&<textarea className="lnta" rows={2} placeholder="Notes — weight, how it felt..." value={note} onChange={e=>setNotes(p=>({...p,[nk]:e.target.value}))}/>}
+      </div>
+    );
+  };
+
+  const WorkoutView = () => (
+    <div>
+      <div className="ldh">
+        <div className="lbadge" style={{color:dd.color,borderColor:dd.color,background:dd.color+'18'}}>{dd.id}</div>
+        <div>
+          <div style={{fontSize:9,color:'var(--text3)',letterSpacing:'.1em'}}>WEEK {aw} · {phase}</div>
+          <div style={{fontSize:19,fontWeight:900,color:'#fff',lineHeight:1}}>{dd.label}</div>
+          <div style={{fontSize:11,fontWeight:600,color:dd.color,letterSpacing:'.08em',marginTop:2}}>{dd.sub}</div>
+        </div>
+        <div style={{marginLeft:'auto',textAlign:'right'}}>
+          <div style={{fontSize:20,fontWeight:900,color:pct===100?dd.color:'#fff'}}>{pct}%</div>
+          <div style={{fontSize:8,color:'var(--text3)',letterSpacing:'.1em'}}>DONE</div>
+        </div>
+      </div>
+      <div className="lpbw"><div className="lpb" style={{width:pct+'%',background:dd.color}}/></div>
+      <div style={{display:'flex',justifyContent:'flex-end',marginBottom:14}}>
+        {isManual
+          ? <button className="lumkb" onClick={()=>setManual(p=>{const n={...p};delete n[manualKey(aw,ad)];return n;})}>✕ UNMARK COMPLETE</button>
+          : <button className="lmkb" onClick={()=>setManual(p=>({...p,[manualKey(aw,ad)]:true}))}>✓ MARK DAY COMPLETE</button>
+        }
+      </div>
+      {dd.warmup?.length>0&&(
+        <>
+          <div className="lslbl">WARM-UP</div>
+          <div className="lwu">{dd.warmup.map((item,i)=>(
+            <div key={i} className="lwui"><div className="lwud"/><div className="lwut">{item}</div></div>
+          ))}</div>
+        </>
+      )}
+      {dd.supersets.map((ss,si)=>(
+        <div className="lssb" key={si}>
+          <div className="lsstr">
+            <div className="lsst" style={{color:dd.color}}>— {ss.name}</div>
+            <div className="lssl" style={{background:dd.color+'22'}}/>
+          </div>
+          {ss.exercises.map((ex,ei)=><ExCard key={ei} ex={ex} si={si} ei={ei}/>)}
+        </div>
+      ))}
+      {dd.notes?.length>0&&(
+        <div style={{marginBottom:10}}>
+          <div className="lslbl">RIDE STRUCTURE</div>
+          <div className="lwu">{dd.notes.map((item,i)=>(
+            <div key={i} className="lwui"><div className="lwud"/><div className="lwut">{item}</div></div>
+          ))}</div>
+        </div>
+      )}
+      {dd.finish&&<div className="lfb"><div style={{fontSize:14,color:dd.color}}>→</div><div><div style={{fontSize:8,color:dd.color,letterSpacing:'.13em',marginBottom:2}}>FINISHER</div><div style={{fontFamily:'Barlow,sans-serif',fontSize:12,color:'var(--text2)'}}>{dd.finish}</div></div></div>}
+      {dd.stretch&&<div className="lfb"><div style={{fontSize:14,color:'var(--text3)'}}>⟳</div><div><div style={{fontSize:8,color:'var(--text3)',letterSpacing:'.13em',marginBottom:2}}>COOLDOWN & STRETCH</div><div style={{fontFamily:'Barlow,sans-serif',fontSize:12,color:'var(--text2)'}}>{dd.stretch}</div></div></div>}
+      {pct===100&&<div className="lcb" style={{borderColor:dd.color,background:dd.color+'10'}}><div style={{fontSize:15,fontWeight:900,color:dd.color,letterSpacing:'.1em'}}>WEEK {aw} · DAY {dd.id} COMPLETE</div><div style={{fontFamily:'Barlow,sans-serif',fontSize:11,color:'var(--text3)',marginTop:3}}>Rest up and come back stronger.</div></div>}
+    </div>
+  );
+
+  const OverviewView = () => {
+    const total=([1,2,3,4,5,6].reduce((acc,w)=>acc+getWkDone(w),0));
+    const prs=getAllPRs();
+    return (
+      <div>
+        <div className="lsg">
+          <div className="lsc"><div className="lsv" style={{color:'var(--accent)'}}>{total}</div><div className="lsl2">WORKOUTS DONE</div></div>
+          <div className="lsc"><div className="lsv" style={{color:'#FFB800'}}>{42-total}</div><div className="lsl2">REMAINING</div></div>
+          <div className="lsc"><div className="lsv" style={{color:'#00C896'}}>{Math.round(total/42*100)}%</div><div className="lsl2">COMPLETE</div></div>
+        </div>
+        <div className="lslbl" style={{color:'var(--text3)',marginBottom:8}}>WEEK COMPLETION</div>
+        <div style={{background:'var(--surface)',border:'1px solid var(--border)',marginBottom:20,overflowX:'auto'}}>
+          <table className="lct">
+            <thead><tr><th>WK</th><th>PHASE</th>{PROGRAM.days.map(d=><th key={d.id}>D{d.id}</th>)}<th>TOTAL</th></tr></thead>
+            <tbody>{[1,2,3,4,5,6].map(w=>{
+              const done=getWkDone(w);
+              return <tr key={w}>
+                <td style={{fontWeight:800,color:w===aw?'#fff':'var(--text2)'}}>W{w}</td>
+                <td style={{color:'var(--text3)',fontSize:10}}>{w<=3?'FOUND':'PROG'}</td>
+                {PROGRAM.days.map((_,di)=>{const p=getPct(w,di);const c=p===100?DAY_COLORS[di]:p>0?DAY_COLORS[di]+'88':'var(--text4)';return <td key={di} style={{color:c,fontWeight:p===100?800:400}}>{p===100?'✓':p>0?p+'%':'—'}</td>;})}
+                <td style={{fontWeight:800,color:done>0?'#fff':'var(--text4)'}}>{done>0?done+' of 7':'—'}</td>
+              </tr>;
+            })}</tbody>
+          </table>
+        </div>
+        <div className="lslbl" style={{color:'var(--text3)',marginBottom:8}}>PERSONAL RECORDS</div>
+        {prs.length>0
+          ?<div className="lprl">{prs.map((pr,i)=>(
+            <div key={i} className="lprr">
+              <div><div style={{fontSize:12,fontWeight:700}}>{pr.name}</div><div style={{fontSize:9,color:'var(--text3)',letterSpacing:'.07em'}}>WK {pr.week} BEST</div></div>
+              <div style={{fontSize:12,fontWeight:700,color:'#FFB800'}}>⚡ {pr.weight} lbs</div>
+            </div>))}</div>
+          :<div style={{background:'var(--surface)',border:'1px solid var(--border)',padding:18,textAlign:'center',fontFamily:'Barlow,sans-serif',fontSize:12,color:'var(--text3)'}}>Log weights to track PRs.</div>
+        }
+      </div>
+    );
+  };
+
+  return (
+    <div className="lim">
+      <style>{css}</style>
+      <div className="lhdr">
+        <div><div className="lsub">6-WEEK TRAINING PROGRAM</div><h1>LYV IN MOTION</h1></div>
+        <div className="lhdr-right">
+          <div className="ltimer">
+            <div>
+              <div style={{fontSize:8,color:'var(--text3)',letterSpacing:'.1em',marginBottom:2,textAlign:'right'}}>REST</div>
+              <div className={tcls} style={{color:timerOn?(timerSec<=10?undefined:'#FFB800'):'#252525'}}>{fmtTimer(timerSec)}</div>
+            </div>
+            <div className="ltimer-btns">
+              {[60,90,120].map(s=><button key={s} className="ltbtn" onClick={()=>startTimer(s)}>{s}s</button>)}
+              {timerOn&&<button className="ltbtn stop" onClick={stopTimer}>■</button>}
+            </div>
+          </div>
+          <div>
+            <div className="lhdr-name">ROB</div>
+            <div className="lhdr-btns">
+              <div className="lhdr-btn">↓ BACKUP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <MobileNav/>
+
+      <div className="lmtimer">
+        <div>
+          <div style={{fontSize:8,color:'var(--text3)',letterSpacing:'.12em',marginBottom:2}}>REST TIMER</div>
+          <div className={mtcls} style={{color:timerOn?(timerSec<=10?undefined:'#FFB800'):'#252525'}}>{fmtTimer(timerSec)}</div>
+        </div>
+        <div className="lmt-btns">
+          {[60,90,120].map(s=><button key={s} className="lmtbtn" onClick={()=>startTimer(s)}>{s}s</button>)}
+          {timerOn&&<button className="lmtbtn stop" onClick={stopTimer}>■</button>}
+        </div>
+      </div>
+
+      <div className="lbody">
+        <Sidebar/>
+        <div className="lcontent">
+          <div className="ltabs">
+            <div className={`ltab${tab==='workout'?' active':''}`} onClick={()=>setTab('workout')}>WORKOUT</div>
+            <div className={`ltab${tab==='overview'?' active':''}`} onClick={()=>setTab('overview')}>PROGRESS</div>
+          </div>
+          {tab==='workout'?<WorkoutView/>:<OverviewView/>}
+        </div>
+      </div>
+
+      <div className="demo-badge">DEMO MODE</div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app-root')).render(<App/>);
+</script>
+</body>
+</html>

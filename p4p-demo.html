@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pound for Pound — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --sur: #141414;
+    --sur2: #1c1c1c;
+    --brd: #2a2a2a;
+    --txt: #f0f0f0;
+    --mut: #666;
+    --acc: #e8ff47;
+    --err: #ee2211;
+    --ok: #4ade80;
+    --fd: 'Bebas Neue', sans-serif;
+    --fb: 'Space Mono', monospace;
+    --ft: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: var(--ft);
+    color: var(--txt);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  /* LAUNCH BUTTON */
+  .launch-wrap {
+    text-align: center;
+  }
+  .launch-title {
+    font-family: var(--fd);
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .launch-title .red { color: var(--err); }
+  .launch-sub {
+    font-family: var(--fb);
+    font-size: 11px;
+    color: var(--mut);
+    letter-spacing: 3px;
+    margin-bottom: 48px;
+    text-transform: uppercase;
+  }
+  .launch-btn {
+    background: var(--acc);
+    color: #0a0a0a;
+    border: none;
+    padding: 18px 48px;
+    font-family: var(--fb);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 0 40px rgba(232,255,71,0.2);
+  }
+  .launch-btn:hover { transform: scale(1.03); box-shadow: 0 0 60px rgba(232,255,71,0.35); }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  /* APP SHELL */
+  .app-shell {
+    width: 100%;
+    max-width: 480px;
+    height: 90vh;
+    max-height: 860px;
+    background: var(--bg);
+    border: 1px solid var(--brd);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 80px rgba(232,255,71,0.08);
+  }
+
+  /* CLOSE BTN */
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--sur2);
+    border: 1px solid var(--brd);
+    color: var(--mut);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 10;
+    transition: color 0.2s;
+  }
+  .close-btn:hover { color: var(--txt); }
+
+  /* HEADER */
+  .app-header {
+    background: #0d0d0d;
+    border-bottom: 1px solid var(--brd);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .app-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--fd);
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+  .logo-red { color: var(--err); }
+  .header-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .user-greeting { font-size: 13px; color: var(--mut); }
+  .user-greeting strong { color: var(--txt); }
+  .user-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--acc);
+    color: #0a0a0a;
+    font-family: var(--fb);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* TABS */
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--brd);
+    flex-shrink: 0;
+    background: #0d0d0d;
+  }
+  .tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-family: var(--fb);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--mut);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .tab.active { color: var(--acc); border-bottom-color: var(--acc); }
+  .tab:hover:not(.active) { color: var(--txt); }
+
+  /* PANES */
+  .pane-wrap {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .pane-wrap::-webkit-scrollbar { width: 4px; }
+  .pane-wrap::-webkit-scrollbar-track { background: transparent; }
+  .pane-wrap::-webkit-scrollbar-thumb { background: var(--brd); }
+  .pane { display: none; padding: 20px; }
+  .pane.active { display: block; }
+
+  /* DASHBOARD */
+  .week-label {
+    font-family: var(--fb);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--mut);
+    margin-bottom: 16px;
+  }
+  .week-label span { color: var(--acc); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--sur);
+    border: 1px solid var(--brd);
+    padding: 16px;
+  }
+  .stat-label {
+    font-family: var(--fb);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--mut);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .stat-val {
+    font-family: var(--fd);
+    font-size: 32px;
+    color: var(--txt);
+    line-height: 1;
+  }
+  .stat-val.green { color: var(--ok); }
+
+  .motivation-card {
+    background: var(--sur);
+    border-left: 3px solid var(--acc);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .motivation-label {
+    font-family: var(--fb);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--acc);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .motivation-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--acc);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .motivation-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--txt);
+    font-style: italic;
+  }
+
+  .chart-card {
+    background: var(--sur);
+    border: 1px solid var(--brd);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-title {
+    font-family: var(--fb);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--mut);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  canvas { width: 100% !important; }
+
+  .challenges-card {
+    background: var(--sur);
+    border: 1px solid var(--brd);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .challenges-title {
+    font-family: var(--fb);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--mut);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .challenge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--brd);
+  }
+  .challenge-row:last-child { border-bottom: none; }
+  .ch-name { font-size: 13px; color: var(--txt); }
+  .ch-target { font-family: var(--fb); font-size: 10px; color: var(--mut); }
+  .ch-input {
+    background: var(--sur2);
+    border: 1px solid var(--brd);
+    color: var(--txt);
+    width: 56px;
+    padding: 6px 8px;
+    font-family: var(--fb);
+    font-size: 12px;
+    text-align: center;
+  }
+  .ch-done {
+    width: 28px; height: 28px;
+    background: var(--ok);
+    border: none;
+    color: #0a0a0a;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ch-done.incomplete {
+    background: var(--sur2);
+    border: 1px solid var(--brd);
+    color: var(--mut);
+  }
+
+  /* LEADERBOARD */
+  .lb-header {
+    font-family: var(--fd);
+    font-size: 36px;
+    margin-bottom: 4px;
+  }
+  .lb-sub {
+    font-family: var(--fb);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--mut);
+    margin-bottom: 20px;
+  }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--brd);
+  }
+  .lb-rank {
+    font-family: var(--fd);
+    font-size: 28px;
+    width: 32px;
+    text-align: center;
+    color: var(--mut);
+    flex-shrink: 0;
+  }
+  .lb-rank.gold { color: #ffd700; }
+  .lb-rank.silver { color: #c0c0c0; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--sur2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--fb);
+    font-size: 11px;
+    color: var(--acc);
+    flex-shrink: 0;
+    border: 1px solid var(--brd);
+  }
+  .lb-info { flex: 1; }
+  .lb-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+  .lb-detail { font-family: var(--fb); font-size: 9px; color: var(--mut); letter-spacing: 1px; }
+  .lb-pct {
+    font-family: var(--fd);
+    font-size: 28px;
+    color: var(--ok);
+    flex-shrink: 0;
+  }
+  .lb-pct.neg { color: var(--err); }
+
+  /* CHECK-IN */
+  .ci-title { font-family: var(--fd); font-size: 36px; margin-bottom: 4px; }
+  .ci-sub { font-size: 13px; color: var(--mut); margin-bottom: 20px; }
+  .ci-week {
+    background: var(--sur);
+    border: 1px solid var(--brd);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .ci-week-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--sur2);
+    cursor: pointer;
+  }
+  .ci-wk-num { font-family: var(--fd); font-size: 22px; }
+  .ci-wk-num.curr { color: var(--acc); }
+  .ci-wk-num.done { color: var(--ok); }
+  .ci-status {
+    font-family: var(--fb);
+    font-size: 8px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border: 1px solid;
+  }
+  .ci-status.submitted { color: var(--ok); border-color: rgba(74,222,128,.3); }
+  .ci-status.open { color: var(--acc); border-color: rgba(232,255,71,.3); }
+  .ci-status.future { color: var(--mut); border-color: var(--brd); }
+  .ci-body { padding: 16px 18px; display: none; }
+  .ci-body.show { display: block; }
+  .ci-submitted-val { font-family: var(--fd); font-size: 28px; color: var(--ok); }
+  .ci-submitted-date { font-family: var(--fb); font-size: 9px; color: var(--mut); margin-top: 2px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-family: var(--fb); font-size: 9px; letter-spacing: 2px; color: var(--mut); margin-bottom: 6px; text-transform: uppercase; }
+  .form-group input[type=number] {
+    background: var(--sur2);
+    border: 1px solid var(--brd);
+    color: var(--txt);
+    padding: 10px 14px;
+    font-family: var(--fb);
+    font-size: 14px;
+    width: 160px;
+  }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--mut); cursor: pointer; margin-bottom: 14px; }
+  .btn-primary {
+    background: var(--acc);
+    color: #0a0a0a;
+    border: none;
+    padding: 12px 24px;
+    font-family: var(--fb);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="launch-wrap">
+  <div class="launch-title">
+    <span class="red">POUND</span> FOR <span class="red">POUND</span>
+  </div>
+  <div class="launch-sub">12-Week Weight Loss Competition</div>
+  <button class="launch-btn" onclick="openDemo()">View Live Demo →</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="demoModal">
+  <div class="app-shell">
+    <button class="close-btn" onclick="closeDemo()">✕</button>
+
+    <!-- HEADER -->
+    <div class="app-header">
+      <div class="app-logo">
+        🥊 <span class="logo-red">POUND</span>&nbsp;FOR&nbsp;<span class="logo-red">POUND</span> 🥊
+      </div>
+      <div class="header-user">
+        <div class="user-greeting">Hey, <strong>Marcus</strong></div>
+        <div class="user-avatar">MJ</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('dashboard', this)">Dashboard</div>
+      <div class="tab" onclick="switchTab('checkin', this)">Weekly Check-In</div>
+      <div class="tab" onclick="switchTab('leaderboard', this)">Week 4 Leaderboard</div>
+    </div>
+
+    <!-- PANES -->
+    <div class="pane-wrap">
+
+      <!-- DASHBOARD -->
+      <div class="pane active" id="pane-dashboard">
+        <div class="week-label">WEEK <span>4</span> OF 12</div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Current Weight</div>
+            <div class="stat-val">218.4 <span style="font-size:16px;color:var(--mut)">lbs</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Starting Weight</div>
+            <div class="stat-val">231.0 <span style="font-size:16px;color:var(--mut)">lbs</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pounds Lost</div>
+            <div class="stat-val green">12.6 <span style="font-size:16px">lbs</span></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Body Weight Lost</div>
+            <div class="stat-val green">5.4<span style="font-size:16px">%</span></div>
+          </div>
+        </div>
+
+        <div class="motivation-card">
+          <div class="motivation-label">YOUR DAILY MESSAGE</div>
+          <div class="motivation-text">Week 4 and you're already down 12 pounds — that's not luck, that's discipline showing up daily. Keep that streak alive and the leaderboard will follow.</div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Weight Over 12 Weeks</div>
+          <canvas id="weightChart" height="120"></canvas>
+        </div>
+
+        <div class="challenges-card">
+          <div class="challenges-title">Today's Challenges — Day 22</div>
+          <div class="challenge-row">
+            <div>
+              <div class="ch-name">Push-ups</div>
+              <div class="ch-target">Target: 27 reps</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input class="ch-input" type="number" value="30" readonly>
+              <button class="ch-done" onclick="toggleChallenge(this)">✓</button>
+            </div>
+          </div>
+          <div class="challenge-row">
+            <div>
+              <div class="ch-name">Squats</div>
+              <div class="ch-target">Target: 27 reps</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input class="ch-input" type="number" value="27" readonly>
+              <button class="ch-done" onclick="toggleChallenge(this)">✓</button>
+            </div>
+          </div>
+          <div class="challenge-row">
+            <div>
+              <div class="ch-name">Sit-ups</div>
+              <div class="ch-target">Target: 27 reps</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input class="ch-input" type="number" placeholder="0">
+              <button class="ch-done incomplete" onclick="toggleChallenge(this)">○</button>
+            </div>
+          </div>
+          <div class="challenge-row">
+            <div>
+              <div class="ch-name">Walk / Jog</div>
+              <div class="ch-target">Target: 20 mins</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input class="ch-input" type="number" value="25" readonly>
+              <button class="ch-done" onclick="toggleChallenge(this)">✓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div class="pane" id="pane-checkin">
+        <div class="ci-title">Weekly Check-In</div>
+        <div class="ci-sub">Log your weight each week. Send a photo to the group chat to confirm.</div>
+
+        <div class="ci-week">
+          <div class="ci-week-hdr" onclick="toggleWeek(this)">
+            <div><div class="ci-wk-num curr">Week 4</div><div style="font-family:var(--fb);font-size:9px;color:var(--mut);letter-spacing:1px;margin-top:2px">APR 14 — APR 20</div></div>
+            <div class="ci-status open">Open</div>
+          </div>
+          <div class="ci-body show">
+            <div class="form-group"><label>Your weight (lbs)</label><input type="number" value="218.4" step="0.1"></div>
+            <label class="checkbox-row"><input type="checkbox" checked> Photo sent to group chat</label>
+            <button class="btn-primary">Submit Week 4</button>
+          </div>
+        </div>
+
+        <div class="ci-week">
+          <div class="ci-week-hdr" onclick="toggleWeek(this)">
+            <div><div class="ci-wk-num done">Week 3</div><div style="font-family:var(--fb);font-size:9px;color:var(--mut);letter-spacing:1px;margin-top:2px">APR 7 — APR 13</div></div>
+            <div class="ci-status submitted">Submitted</div>
+          </div>
+          <div class="ci-body">
+            <div class="ci-submitted-val">221.2 lbs</div>
+            <div class="ci-submitted-date">Submitted Mon Apr 7 at 8:14 AM · 📸 Photo sent</div>
+            <div style="margin-top:12px;font-size:12px;color:var(--mut);cursor:pointer">Need to edit? Request admin unlock →</div>
+          </div>
+        </div>
+
+        <div class="ci-week">
+          <div class="ci-week-hdr" onclick="toggleWeek(this)">
+            <div><div class="ci-wk-num done">Week 2</div><div style="font-family:var(--fb);font-size:9px;color:var(--mut);letter-spacing:1px;margin-top:2px">MAR 31 — APR 6</div></div>
+            <div class="ci-status submitted">Submitted</div>
+          </div>
+          <div class="ci-body">
+            <div class="ci-submitted-val">225.8 lbs</div>
+            <div class="ci-submitted-date">Submitted Mon Mar 31 at 7:52 AM · 📸 Photo sent</div>
+          </div>
+        </div>
+
+        <div class="ci-week">
+          <div class="ci-week-hdr" onclick="toggleWeek(this)">
+            <div><div class="ci-wk-num done">Week 1</div><div style="font-family:var(--fb);font-size:9px;color:var(--mut);letter-spacing:1px;margin-top:2px">MAR 24 — MAR 30</div></div>
+            <div class="ci-status submitted">Submitted</div>
+          </div>
+          <div class="ci-body">
+            <div class="ci-submitted-val">231.0 lbs</div>
+            <div class="ci-submitted-date">Submitted Mon Mar 24 at 9:01 AM · 📸 Photo sent</div>
+          </div>
+        </div>
+
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 5</div><div style="font-family:var(--fb);font-size:9px;color:var(--mut);letter-spacing:1px;margin-top:2px">APR 21 — APR 27</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 6</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 7</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 8</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 9</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 10</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 11</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+        <div class="ci-week">
+          <div class="ci-week-hdr">
+            <div><div class="ci-wk-num">Week 12</div></div>
+            <div class="ci-status future">Not yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div class="pane" id="pane-leaderboard">
+        <div class="lb-header">Week 4 Leaderboard</div>
+        <div class="lb-sub">% Body Weight Lost This Week</div>
+
+        <div class="lb-row">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-avatar">TD</div>
+          <div class="lb-info">
+            <div class="lb-name">Tamika D.</div>
+            <div class="lb-detail">197.2 → 193.8 lbs · Overall: -8.2%</div>
+          </div>
+          <div class="lb-pct">-1.72%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank silver">2</div>
+          <div class="lb-avatar" style="color:var(--acc)">MJ</div>
+          <div class="lb-info">
+            <div class="lb-name">Marcus J. <span style="font-family:var(--fb);font-size:9px;color:var(--acc)">YOU</span></div>
+            <div class="lb-detail">221.2 → 218.4 lbs · Overall: -5.4%</div>
+          </div>
+          <div class="lb-pct">-1.27%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank bronze">3</div>
+          <div class="lb-avatar">RW</div>
+          <div class="lb-info">
+            <div class="lb-name">Ray W.</div>
+            <div class="lb-detail">248.0 → 244.9 lbs · Overall: -6.1%</div>
+          </div>
+          <div class="lb-pct">-1.25%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar">SB</div>
+          <div class="lb-info">
+            <div class="lb-name">Sandra B.</div>
+            <div class="lb-detail">178.5 → 176.4 lbs · Overall: -4.8%</div>
+          </div>
+          <div class="lb-pct">-1.18%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">5</div>
+          <div class="lb-avatar">DC</div>
+          <div class="lb-info">
+            <div class="lb-name">DeShawn C.</div>
+            <div class="lb-detail">262.0 → 258.9 lbs · Overall: -3.9%</div>
+          </div>
+          <div class="lb-pct">-1.18%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">6</div>
+          <div class="lb-avatar">KP</div>
+          <div class="lb-info">
+            <div class="lb-name">Keisha P.</div>
+            <div class="lb-detail">191.0 → 188.8 lbs · Overall: -4.2%</div>
+          </div>
+          <div class="lb-pct">-1.15%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">7</div>
+          <div class="lb-avatar">JM</div>
+          <div class="lb-info">
+            <div class="lb-name">Jerome M.</div>
+            <div class="lb-detail">274.5 → 271.6 lbs · Overall: -4.1%</div>
+          </div>
+          <div class="lb-pct">-1.06%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">8</div>
+          <div class="lb-avatar">AL</div>
+          <div class="lb-info">
+            <div class="lb-name">Aaliyah L.</div>
+            <div class="lb-detail">165.0 → 163.4 lbs · Overall: -3.2%</div>
+          </div>
+          <div class="lb-pct">-0.97%</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">9</div>
+          <div class="lb-avatar">BT</div>
+          <div class="lb-info">
+            <div class="lb-name">Bryan T.</div>
+            <div class="lb-detail">—</div>
+          </div>
+          <div class="lb-pct" style="font-size:14px;color:var(--mut)">Pending</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function openDemo() {
+    document.getElementById('demoModal').classList.add('open');
+    setTimeout(drawChart, 100);
+  }
+  function closeDemo() {
+    document.getElementById('demoModal').classList.remove('open');
+  }
+
+  function switchTab(id, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('pane-' + id).classList.add('active');
+    if (id === 'dashboard') drawChart();
+  }
+
+  function toggleWeek(hdr) {
+    var body = hdr.nextElementSibling;
+    if (!body) return;
+    body.classList.toggle('show');
+  }
+
+  function drawChart() {
+    var canvas = document.getElementById('weightChart');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth * 2;
+    canvas.height = 240;
+    ctx.scale(2, 1);
+
+    var W = canvas.offsetWidth / 2;
+    var H = canvas.height;
+    var weights = [231.0, 225.8, 221.2, 218.4];
+    var labels  = ['Wk 1','Wk 2','Wk 3','Wk 4'];
+
+    ctx.clearRect(0, 0, W, H);
+
+    var pad = { t: 20, r: 20, b: 30, l: 40 };
+    var cw  = W - pad.l - pad.r;
+    var ch  = H - pad.t - pad.b;
+
+    var minW = Math.min(...weights) - 3;
+    var maxW = Math.max(...weights) + 3;
+
+    // Grid lines
+    ctx.strokeStyle = '#2a2a2a';
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 4; i++) {
+      var y = pad.t + (ch / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(pad.l, y);
+      ctx.lineTo(pad.l + cw, y);
+      ctx.stroke();
+      var val = maxW - ((maxW - minW) / 4) * i;
+      ctx.fillStyle = '#444';
+      ctx.font = '9px Space Mono';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toFixed(0), pad.l - 6, y + 3);
+    }
+
+    // Points
+    var pts = weights.map(function(w, i) {
+      return {
+        x: pad.l + (cw / (weights.length - 1)) * i,
+        y: pad.t + ch * (1 - (w - minW) / (maxW - minW))
+      };
+    });
+
+    // Area fill
+    var grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + ch);
+    grad.addColorStop(0, 'rgba(232,255,71,0.12)');
+    grad.addColorStop(1, 'rgba(232,255,71,0)');
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    pts.forEach(function(p) { ctx.lineTo(p.x, p.y); });
+    ctx.lineTo(pts[pts.length-1].x, pad.t + ch);
+    ctx.lineTo(pts[0].x, pad.t + ch);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    pts.forEach(function(p) { ctx.lineTo(p.x, p.y); });
+    ctx.strokeStyle = '#e8ff47';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Dots
+    pts.forEach(function(p, i) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = i === pts.length - 1 ? '#e8ff47' : '#666';
+      ctx.fill();
+      // Label
+      ctx.fillStyle = '#888';
+      ctx.font = '9px Space Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[i], p.x, H - 8);
+    });
+  }
+
+  // Close on overlay click
+  document.getElementById('demoModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDemo();
+  });
+
+  function toggleChallenge(btn) {
+    const done = !btn.classList.contains('incomplete');
+    if (done) {
+      btn.classList.add('incomplete');
+      btn.textContent = '○';
+    } else {
+      btn.classList.remove('incomplete');
+      btn.textContent = '✓';
+    }
+  }
+</script>
+</body>
+</html>
