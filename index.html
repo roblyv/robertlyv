@@ -547,9 +547,9 @@ html, body {
       <h2 class="section-title">More than a <span>résumé</span></h2>
       <div class="about-grid">
         <div class="about-text">
-          <p>I'm a <strong>Philly kid who grew up to lead some of the most complex technology transformations in the country</strong> — from defense programs to cancer centers and state governments. I didn't take the traditional path, and I think that's exactly why it works.</p>
-          <p>At Microsoft, I am a Principal Customer Success Account Manager in the State, Local Government and Education (SLED) organization, coaching a team, managing a multi-million dollar FY26 Microsoft Unified portfolio, and making sure that when the state needs Microsoft to show up, we show up right.</p>
-          <p>But I've never been just the job. I build apps in my spare time, run a laser engraving business with a partner, created a Junior MBA program for 6th graders in my town, and I'm probably already thinking about the next thing.</p>
+          <p>I've built a career across <strong>defense, healthcare, and state government</strong> — three industries where the stakes are high, the complexity is real, and showing up halfway isn't an option. I didn't take the traditional path, and I think that's exactly why it works.</p>
+          <p>At Microsoft, I lead a team of Customer Success Account Managers supporting some of New Jersey's most critical public sector institutions. I manage a multi-million dollar portfolio, coach and develop the people on my team, and make sure that when our customers are navigating their most important technology decisions, they have someone in their corner who actually understands the stakes.</p>
+          <p>The work shows up in the numbers — renewals landed, cloud adoption accelerated, satisfaction scores that reflect trust built over time. But the real measure is simpler: <strong>customers call me when it matters.</strong> That's not luck. That's the result of showing up consistently, asking the right questions, and never treating a relationship like a transaction.</p>
           <div class="about-stats">
             <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Years at Microsoft</div></div>
             <div class="stat"><div class="stat-num">10 yrs</div><div class="stat-label">Defense Industry</div></div>
@@ -1046,6 +1046,8 @@ function openLightbox(id) {
 }
 function closeLightbox() {
   document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.documentElement.style.overflow = '';
   document.getElementById('lightbox').classList.remove('open');
   const box = document.querySelector('.lb-modal');
   box.style.maxWidth = '';
