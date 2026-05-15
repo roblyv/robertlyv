@@ -902,38 +902,70 @@ function setupMobileSync(){
 const lbData = {
   jrmba: {
     title: 'East Greenwich Junior MBA',
-    desc: 'Entrepreneurship & financial literacy program for 6th graders in East Greenwich, NJ. Students develop business plans and pitch live at "Hornet\'s Nest" — a Shark Tank-style event for the community.',
-    img: null // swap in: 'images/jrmba.jpg'
+    desc: 'Entrepreneurship & financial literacy program for 6th graders in East Greenwich, NJ.',
+    custom: `
+      <div style="width:100%;text-align:center;">
+        <img src="images/hornet-jrmba.png" alt="Junior MBA Program" style="width:120px;height:120px;object-fit:contain;margin:0 auto .75rem;display:block;">
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.5rem;">East Greenwich Junior MBA</h2>
+        <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto .9rem;">
+          I didn't wait for someone else to build it. I saw a gap — middle schoolers with no exposure to entrepreneurship, financial literacy, or real-world business thinking — and I built the program from scratch.
+        </p>
+        <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto .9rem;">
+          Over 16 weeks, 30 students formed companies, developed business plans, managed budgets, and pitched live to a panel of judges at <em style="color:#fff;">The Hornet's Nest</em> — our version of Shark Tank. Seven guest speakers. Five high school mentors. One community that showed up.
+        </p>
+        <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto 1.25rem;">
+          This wasn't a class project. It was a real program, built by a dad who believed kids deserve to learn how the world actually works.
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.25rem;text-align:center;">
+          <div style="background:#111;border:1px solid #222;border-radius:10px;padding:.75rem;">
+            <div style="font-size:1.6rem;font-weight:800;color:#0d9488;">30</div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:2px;">Students</div>
+          </div>
+          <div style="background:#111;border:1px solid #222;border-radius:10px;padding:.75rem;">
+            <div style="font-size:1.6rem;font-weight:800;color:#0d9488;">16</div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:2px;">Weeks</div>
+          </div>
+          <div style="background:#111;border:1px solid #222;border-radius:10px;padding:.75rem;">
+            <div style="font-size:1.6rem;font-weight:800;color:#0d9488;">7</div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:2px;">Guest Speakers</div>
+          </div>
+        </div>
+        <div onclick="openPhoto('images/jrmba_group2026.jpg','East Greenwich Junior MBA — Class of 2026')" style="cursor:pointer;border-radius:10px;overflow:hidden;width:100%;">
+          <img src="images/jrmba_group2026.jpg" alt="Junior MBA Class of 2026" style="width:100%;height:220px;object-fit:cover;object-position:center top;transition:transform .3s;display:block;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="background:#111;padding:.5rem .75rem;font-size:.75rem;color:#6b7280;text-align:left;">📸 Class of 2026 — Graduation Night</div>
+        </div>
+      </div>
+    `
   },
   laser: {
     title: 'Cutting Edge Laser Works',
-    desc: 'Co-founded custom laser engraving business. Handles client relations, production timelines, and quality control across a range of personalized products.',
+    desc: 'Co-founded custom laser engraving business.',
     custom: `
-      <div style="text-align:center;margin-bottom:1.5rem;">
-        <img src="images/cuttingedge/cutting-edge.png" alt="Cutting Edge Laser Works" style="width:160px;height:160px;object-fit:contain;margin-bottom:1rem;">
+      <div style="width:100%;text-align:center;">
+        <img src="images/cuttingedge/cutting-edge.png" alt="Cutting Edge Laser Works" style="width:100px;height:100px;object-fit:contain;margin:0 auto .75rem;display:block;">
         <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.5rem;">Cutting Edge Laser Works</h2>
-        <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto;">
+        <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto 1.5rem;">
           We turn everyday objects into one-of-a-kind keepsakes. From personalized gifts and custom signage to branded merchandise and corporate awards — if you can imagine it, we can engrave it. Every piece is precision-crafted with care, built to last, and made to mean something.
         </p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;">
-        <div onclick="openPhoto('images/cuttingedge/laser1.jpg','Junior MBA Pencil Holder — Wood Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
-          <img src="images/cuttingedge/laser1.jpg" alt="Junior MBA Pencil Holder" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        </div>
-        <div onclick="openPhoto('images/cuttingedge/laser2.jpg','2024 Leopards — Metal Whistle Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
-          <img src="images/cuttingedge/laser2.jpg" alt="Leopards Whistles" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        </div>
-        <div onclick="openPhoto('images/cuttingedge/laser3.jpg','Doom Sign — Layered Acrylic Cut')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
-          <img src="images/cuttingedge/laser3.jpg" alt="Doom Sign" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        </div>
-        <div onclick="openPhoto('images/cuttingedge/laser4.jpg','Ben\'s Philly YETI — Tumbler Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
-          <img src="images/cuttingedge/laser4.jpg" alt="Ben's YETI" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        </div>
-        <div onclick="openPhoto('images/cuttingedge/laser5.jpg','Debbie\'s 70th Birthday — Wood Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
-          <img src="images/cuttingedge/laser5.jpg" alt="Birthday Box" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        </div>
-        <div onclick="openPhoto('images/cuttingedge/laser6.jpg','M&J Charcuterie Board — Marble & Wood')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
-          <img src="images/cuttingedge/laser6.jpg" alt="Charcuterie Board" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;">
+          <div onclick="openPhoto('images/cuttingedge/laser1.jpg','Junior MBA Pencil Holder — Wood Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+            <img src="images/cuttingedge/laser1.jpg" alt="Junior MBA Pencil Holder" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          <div onclick="openPhoto('images/cuttingedge/laser2.jpg','2024 Leopards — Metal Whistle Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+            <img src="images/cuttingedge/laser2.jpg" alt="Leopards Whistles" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          <div onclick="openPhoto('images/cuttingedge/laser3.jpg','Doom Sign — Layered Acrylic Cut')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+            <img src="images/cuttingedge/laser3.jpg" alt="Doom Sign" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          <div onclick="openPhoto('images/cuttingedge/laser4.jpg','Ben\'s Philly YETI — Tumbler Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+            <img src="images/cuttingedge/laser4.jpg" alt="Ben's YETI" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          <div onclick="openPhoto('images/cuttingedge/laser5.jpg','Debbie\'s 70th Birthday — Wood Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+            <img src="images/cuttingedge/laser5.jpg" alt="Birthday Box" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
+          <div onclick="openPhoto('images/cuttingedge/laser6.jpg','M&J Charcuterie Board — Marble & Wood')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+            <img src="images/cuttingedge/laser6.jpg" alt="Charcuterie Board" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          </div>
         </div>
       </div>
     `
@@ -979,6 +1011,11 @@ function openLightbox(id) {
     document.getElementById('lb-desc').textContent = '';
     wrap.style.aspectRatio = 'unset';
     wrap.style.height = 'auto';
+    wrap.style.border = 'none';
+    wrap.style.background = 'none';
+    wrap.style.display = 'block';
+    wrap.style.overflowY = 'auto';
+    wrap.style.maxHeight = '75vh';
     wrap.innerHTML = d.custom;
     box.style.maxWidth = '620px';
   } else if (d.demo) {
@@ -1007,6 +1044,11 @@ function closeLightbox() {
   const wrap = document.getElementById('lb-img-wrap');
   wrap.style.aspectRatio = '';
   wrap.style.height = '';
+  wrap.style.border = '';
+  wrap.style.background = '';
+  wrap.style.display = '';
+  wrap.style.overflowY = '';
+  wrap.style.maxHeight = '';
   wrap.innerHTML = '';
 }
 function closeLightboxOutside(e) {
