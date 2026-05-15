@@ -201,8 +201,8 @@ html, body {
 .cert-items { display: flex; flex-wrap: wrap; gap: .4rem; }
 
 /* ── WINS ── */
-.wins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
-.win-card { background: var(--dark); border: 1px solid rgba(255,255,255,.05); border-radius: 14px; padding: 1.6rem; transition: all .3s; position: relative; overflow: hidden; }
+.wins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; align-items: stretch; grid-auto-rows: 1fr; }
+.win-card { background: var(--dark); border: 1px solid rgba(255,255,255,.05); border-radius: 14px; padding: 1.6rem; transition: all .3s; position: relative; overflow: hidden; display: flex; flex-direction: column; }
 .win-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, rgba(13,148,136,.1), transparent 60%); opacity: 0; transition: opacity .3s; }
 .win-card:hover::before { opacity: 1; }
 .win-card:hover { border-color: rgba(13,148,136,.3); transform: translateY(-3px); }
@@ -271,13 +271,13 @@ html, body {
   background: #fff;
   padding: 8px 8px 28px 8px;
   box-shadow: 0 4px 18px rgba(0,0,0,.45);
-  transition: transform .3s ease, box-shadow .3s ease, z-index 0s;
+  transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s ease;
   cursor: pointer;
   z-index: 1;
 }
 .polaroid:hover {
-  transform: rotate(0deg) scale(1.08) !important;
-  box-shadow: 0 12px 36px rgba(0,0,0,.6);
+  transform: rotate(0deg) scale(1.18) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.65);
   z-index: 10;
 }
 .polaroid img {
@@ -523,7 +523,8 @@ html, body {
   <section class="slide slide-hero">
     <div class="particles" id="particles"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">Principal CSAM · Microsoft · Builder · Leader</div>
+      <img src="images/headshot.jpg" alt="Rob Lyv" style="width:200px;height:200px;border-radius:50%;object-fit:cover;border:3px solid var(--teal);margin-bottom:1.2rem;box-shadow:0 4px 24px rgba(13,148,136,.35);opacity:0;animation:fadeUp .8s .1s forwards;">
+      <div class="hero-eyebrow">Leader · Builder · Connector</div>
       <h1 class="hero-title">I don't just show up.<br>I <span class="lyv">Lyv</span> it.</h1>
       <p class="hero-sub">I build things that matter: <strong>teams, technology, and experiences worth having.</strong> 21 years of making complex problems look easy, one deliberate move at a time.</p>
       <div class="hero-cta">
@@ -681,13 +682,13 @@ html, body {
           <div class="tl-item">
             <div class="tl-dot"></div>
             <div class="tl-date">2017 — 2022 · Microsoft — Healthcare & Life Sciences</div>
-            <div class="tl-title">Senior CSAM</div>
+            <div class="tl-title">Senior Customer Success Account Manager</div>
             <div class="tl-desc">246% renewal attainment. $2.1M portfolio. Led Memorial Sloan Kettering telemedicine go-live. Supported St. Luke's COVID response. Served on Microsoft's disaster recovery team during COVID.</div>
           </div>
           <div class="tl-item">
             <div class="tl-dot"></div>
             <div class="tl-date">2022 — Present · Microsoft — SLED</div>
-            <div class="tl-title">Principal CSAM <span style="font-weight:400;color:var(--gray);font-size:.85rem;">(Senior CSAM 2022 – 2024)</span></div>
+            <div class="tl-title">Principal Customer Success Account Manager <span style="font-weight:400;color:var(--gray);font-size:.85rem;">(Senior Customer Success Account Manager 2022 – 2024)</span></div>
             <div class="tl-desc">Leading at scale. Driving impact across State of New Jersey and City of Philadelphia. Currently managing a $3M Unified portfolio.</div>
           </div>
           <div class="tl-item tl-item-future">
@@ -715,12 +716,21 @@ html, body {
       <div class="section-label">The Numbers</div>
       <h2 class="section-title">Impact that <span>speaks</span></h2>
       <div class="wins-grid">
-        <div class="win-card"><div class="win-num">$3M</div><div class="win-label">Microsoft Unified Portfolio</div><div class="win-desc">Leading a five-member team supporting the State of New Jersey. Consistently delivering top-tier satisfaction, renewal, and secure cloud adoption across New Jersey and City of Philadelphia.</div></div>
+        <div class="win-card"><div class="win-num">$3M</div><div class="win-label">FY26 Microsoft Unified Portfolio</div><div class="win-desc">Leading a five-member team supporting the State of New Jersey. Consistently delivering top-tier satisfaction, renewal, and secure cloud adoption across New Jersey and City of Philadelphia.</div></div>
         <div class="win-card"><div class="win-num">$1.9M</div><div class="win-label">FY26 Renewals Landed</div><div class="win-desc">Continued to demonstrate Microsoft's value through deep customer partnerships and a relentless focus on outcomes.</div></div>
-        <div class="win-card"><div class="win-num">$114M+</div><div class="win-label">Lockheed Subcontracts</div><div class="win-desc">U.S. Navy and Air Force defense programs at Lockheed Martin. $12M+ in negotiated savings without compromising delivery or compliance.</div></div>
         <div class="win-card"><div class="win-num">5x</div><div class="win-label">Hackathon Winner</div><div class="win-desc">Microsoft Global Hackathon winner. Fighting human trafficking, improving maternal health for women of color, and expanding accessibility through AI.</div></div>
-        <div class="win-card"><div class="win-num" style="font-size:1.5rem;">Junior MBA</div><div class="win-label">Founder</div><div class="win-desc">Created the East Greenwich Junior MBA, an entrepreneurship &amp; financial literacy program for middle schoolers, culminating in a live Shark Tank-style pitch event.</div></div>
+        <div class="win-card">
+  <div class="win-num" style="font-size:1.5rem;">Junior MBA</div>
+  <div class="win-label">Founder</div>
+  <div class="win-desc">Created the East Greenwich Junior MBA — an entrepreneurship &amp; financial literacy program for middle schoolers, culminating in <em>The Hornet's Nest</em>, a live Shark Tank-style pitch event.</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem;text-align:center;">
+    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">30</div><div style="font-size:.7rem;color:var(--gray);">Students</div></div>
+    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">16</div><div style="font-size:.7rem;color:var(--gray);">Weeks</div></div>
+    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">7</div><div style="font-size:.7rem;color:var(--gray);">Guest Speakers</div></div>
+  </div>
+</div>
         <div class="win-card"><div class="win-num">$45K</div><div class="win-label">Raised for St. Jude</div><div class="win-desc">Co-led the auction at the Federal Give Golf Classic. $45K raised for kids fighting cancer.</div></div>
+        <div class="win-card"><div class="win-num">$114M+</div><div class="win-label">Lockheed Subcontracts</div><div class="win-desc">U.S. Navy and Air Force defense programs at Lockheed Martin. $12M+ in negotiated savings without compromising delivery or compliance.</div></div>
       </div>
     </div>
   </section>
@@ -820,8 +830,12 @@ for(let i = 0; i < 40; i++){
 
 // ── NAVIGATE (desktop) ──
 function goToSlide(n){
-  if(isMobile()) return;
   n = Math.max(0, Math.min(TOTAL - 1, n));
+  if(isMobile()){
+    const slides = document.querySelectorAll('.slide');
+    if(slides[n]) slides[n].scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
   current = n;
   document.getElementById('deck').style.transform = `translateX(-${n * 100}vw)`;
   updateUI();
