@@ -743,10 +743,10 @@ html, body {
       <div class="section-label">What I Build</div>
       <h2 class="section-title">Ideas that become <span>real things</span></h2>
       <div class="builds-grid">
-        <div class="build-card" onclick="openLightbox('jrmba')"><div class="build-icon">🎓</div><div class="build-title">East Greenwich Junior MBA</div><div class="build-desc">Entrepreneurship & financial literacy for middle schoolers, culminating in "Hornet's Nest" — a live Shark Tank pitch event.</div><div class="build-stack"><span class="build-tech">Curriculum Design</span><span class="build-tech">Community</span><span class="build-tech">Mentorship</span></div><div class="build-cta">View ↗</div></div>
-        <div class="build-card" onclick="openLightbox('laser')"><div class="build-icon">✂️</div><div class="build-title">Cutting Edge Laser Works</div><div class="build-desc">Co-founded a custom laser engraving business. Client relations, production timelines, and quality control.</div><div class="build-stack"><span class="build-tech">Small Business</span><span class="build-tech">Operations</span><span class="build-tech">Manufacturing</span></div><div class="build-cta">View ↗</div></div>
-        <div class="build-card" onclick="openLightbox('p4p')"><div class="build-icon">⚖️</div><div class="build-title">Pound for Pound</div><div class="build-desc">A 12-week weight loss competition PWA for a group of friends. Real users, real leaderboards, real motivation — powered by GenAI daily motivation via Azure Functions and the Anthropic API.</div><div class="build-stack"><span class="build-tech">Firebase</span><span class="build-tech">PWA</span><span class="build-tech">Azure Functions</span><span class="build-tech">GenAI</span><span class="build-tech">REST APIs</span></div><div class="build-cta">View ↗</div></div>
-        <div class="build-card" onclick="openLightbox('lyv')"><div class="build-icon">🏃</div><div class="build-title">Lyv in Motion</div><div class="build-desc">Personal wellness PWA built from scratch. If you're going to track your fitness journey, you might as well build the app yourself.</div><div class="build-stack"><span class="build-tech">PWA</span><span class="build-tech">Firebase</span><span class="build-tech">JavaScript</span></div><div class="build-cta">View ↗</div></div>
+        <div class="build-card" onclick="openLightbox('jrmba')"><div class="build-icon">🎓</div><div class="build-title">East Greenwich Junior MBA</div><div class="build-desc">Entrepreneurship & financial literacy for middle schoolers, culminating in "Hornet's Nest" — a live Shark Tank pitch event.</div><div class="build-stack"><span class="build-tech">Curriculum Design</span><span class="build-tech">Community</span><span class="build-tech">Mentorship</span></div><div class="build-cta">View Details ↗</div></div>
+        <div class="build-card" onclick="openLightbox('laser')"><div class="build-icon">✂️</div><div class="build-title">Cutting Edge Laser Works</div><div class="build-desc">Co-founded a custom laser engraving business. Client relations, production timelines, and quality control.</div><div class="build-stack"><span class="build-tech">Small Business</span><span class="build-tech">Operations</span><span class="build-tech">Manufacturing</span></div><div class="build-cta">View Details ↗</div></div>
+        <div class="build-card" onclick="openLightbox('p4p')"><div class="build-icon">⚖️</div><div class="build-title">Pound for Pound</div><div class="build-desc">A 12-week weight loss competition PWA for a group of friends. Real users, real leaderboards, real motivation — powered by GenAI daily motivation via Azure Functions and the Anthropic API.</div><div class="build-stack"><span class="build-tech">Firebase</span><span class="build-tech">PWA</span><span class="build-tech">Azure Functions</span><span class="build-tech">GenAI</span><span class="build-tech">REST APIs</span></div><div class="build-cta">View Live Demo ↗</div></div>
+        <div class="build-card" onclick="openLightbox('lyv')"><div class="build-icon">🏃</div><div class="build-title">Lyv in Motion</div><div class="build-desc">Personal wellness PWA built from scratch. If you're going to track your fitness journey, you might as well build the app yourself.</div><div class="build-stack"><span class="build-tech">PWA</span><span class="build-tech">Firebase</span><span class="build-tech">JavaScript</span></div><div class="build-cta">View Live Demo ↗</div></div>
       </div>
     </div>
   </section>
@@ -908,7 +908,35 @@ const lbData = {
   laser: {
     title: 'Cutting Edge Laser Works',
     desc: 'Co-founded custom laser engraving business. Handles client relations, production timelines, and quality control across a range of personalized products.',
-    img: null // swap in: 'images/laser.jpg'
+    custom: `
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <img src="images/cuttingedge/cutting-edge.png" alt="Cutting Edge Laser Works" style="width:160px;height:160px;object-fit:contain;margin-bottom:1rem;">
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.5rem;">Cutting Edge Laser Works</h2>
+        <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto;">
+          We turn everyday objects into one-of-a-kind keepsakes. From personalized gifts and custom signage to branded merchandise and corporate awards — if you can imagine it, we can engrave it. Every piece is precision-crafted with care, built to last, and made to mean something.
+        </p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;">
+        <div onclick="openPhoto('images/cuttingedge/laser1.jpg','Junior MBA Pencil Holder — Wood Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+          <img src="images/cuttingedge/laser1.jpg" alt="Junior MBA Pencil Holder" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div onclick="openPhoto('images/cuttingedge/laser2.jpg','2024 Leopards — Metal Whistle Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+          <img src="images/cuttingedge/laser2.jpg" alt="Leopards Whistles" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div onclick="openPhoto('images/cuttingedge/laser3.jpg','Doom Sign — Layered Acrylic Cut')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+          <img src="images/cuttingedge/laser3.jpg" alt="Doom Sign" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div onclick="openPhoto('images/cuttingedge/laser4.jpg','Ben\'s Philly YETI — Tumbler Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+          <img src="images/cuttingedge/laser4.jpg" alt="Ben's YETI" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div onclick="openPhoto('images/cuttingedge/laser5.jpg','Debbie\'s 70th Birthday — Wood Engraving')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+          <img src="images/cuttingedge/laser5.jpg" alt="Birthday Box" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <div onclick="openPhoto('images/cuttingedge/laser6.jpg','M&J Charcuterie Board — Marble & Wood')" style="cursor:pointer;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#1a1a1a;">
+          <img src="images/cuttingedge/laser6.jpg" alt="Charcuterie Board" style="width:100%;height:100%;object-fit:cover;transition:transform .3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+      </div>
+    `
   },
   ai: {
     title: 'AI-Powered Apps',
@@ -944,16 +972,25 @@ function openPhoto(src, title) {
 function openLightbox(id) {
   const d = lbData[id];
   if (!d) return;
-  document.getElementById('lb-title').textContent = d.title;
-  document.getElementById('lb-desc').textContent = d.desc;
-  const wrap = document.getElementById('lb-img-wrap');
   const box = document.querySelector('.lb-modal');
-  if (d.demo) {
+  const wrap = document.getElementById('lb-img-wrap');
+  if (d.custom) {
+    document.getElementById('lb-title').textContent = '';
+    document.getElementById('lb-desc').textContent = '';
+    wrap.style.aspectRatio = 'unset';
+    wrap.style.height = 'auto';
+    wrap.innerHTML = d.custom;
+    box.style.maxWidth = '620px';
+  } else if (d.demo) {
+    document.getElementById('lb-title').textContent = d.title;
+    document.getElementById('lb-desc').textContent = d.desc;
     wrap.style.aspectRatio = 'unset';
     wrap.style.height = '80vh';
     wrap.innerHTML = `<iframe src="${d.demo}" style="width:100%;height:100%;border:none;border-radius:8px;" allowfullscreen></iframe>`;
     box.style.maxWidth = '560px';
   } else {
+    document.getElementById('lb-title').textContent = d.title;
+    document.getElementById('lb-desc').textContent = d.desc;
     wrap.style.aspectRatio = '';
     wrap.style.height = '';
     box.style.maxWidth = '';
@@ -970,6 +1007,7 @@ function closeLightbox() {
   const wrap = document.getElementById('lb-img-wrap');
   wrap.style.aspectRatio = '';
   wrap.style.height = '';
+  wrap.innerHTML = '';
 }
 function closeLightboxOutside(e) {
   if (e.target === document.getElementById('lightbox')) closeLightbox();
