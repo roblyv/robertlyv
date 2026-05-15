@@ -918,12 +918,14 @@ const lbData = {
   p4p: {
     title: 'Pound for Pound',
     desc: 'A 12-week weight loss competition PWA. Features real-time leaderboards, Google & Microsoft OAuth, daily AI-generated motivation via Azure Functions, and a fully custom admin dashboard.',
-    img: null // swap in: 'images/p4p.jpg'
+    img: null,
+    demo: 'p4p-demo.html'
   },
   lyv: {
     title: 'Lyv in Motion',
     desc: 'Personal wellness PWA built from scratch. Tracks fitness progress with a clean UI, Firebase backend, and full PWA support for mobile install.',
-    img: null // swap in: 'images/lyv.jpg'
+    img: null,
+    demo: 'lyvinmotion-demo.html'
   }
 };
 
@@ -945,9 +947,20 @@ function openLightbox(id) {
   document.getElementById('lb-title').textContent = d.title;
   document.getElementById('lb-desc').textContent = d.desc;
   const wrap = document.getElementById('lb-img-wrap');
-  wrap.innerHTML = d.img
-    ? `<img src="${d.img}" alt="${d.title}">`
-    : `<div class="lb-placeholder">📸 Screenshot coming soon</div>`;
+  const box = document.querySelector('.lb-modal');
+  if (d.demo) {
+    wrap.style.aspectRatio = 'unset';
+    wrap.style.height = '80vh';
+    wrap.innerHTML = `<iframe src="${d.demo}" style="width:100%;height:100%;border:none;border-radius:8px;" allowfullscreen></iframe>`;
+    box.style.maxWidth = '560px';
+  } else {
+    wrap.style.aspectRatio = '';
+    wrap.style.height = '';
+    box.style.maxWidth = '';
+    wrap.innerHTML = d.img
+      ? `<img src="${d.img}" alt="${d.title}">`
+      : `<div class="lb-placeholder">📸 Screenshot coming soon</div>`;
+  }
   document.getElementById('lightbox').classList.add('open');
 }
 function closeLightbox() {
