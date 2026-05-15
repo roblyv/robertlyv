@@ -148,11 +148,11 @@ html, body {
 
 /* ── HERO ── */
 .hero-content { text-align: center; max-width: 860px; margin: 0 auto; }
-.hero-eyebrow { font-size: .85rem; font-weight: 500; letter-spacing: .25em; text-transform: uppercase; color: var(--teal); margin-bottom: 1.4rem; opacity: 0; animation: fadeUp .8s .2s forwards; }
-.hero-title { font-family: 'Syne', sans-serif; font-size: clamp(3.2rem, 7vw, 6.5rem); font-weight: 800; line-height: 1; letter-spacing: -.03em; margin-bottom: 1.3rem; opacity: 0; animation: fadeUp .8s .4s forwards; }
+.hero-eyebrow { font-size: .8rem; font-weight: 500; letter-spacing: .25em; text-transform: uppercase; color: var(--teal); margin-bottom: 1rem; opacity: 0; animation: fadeUp .8s .2s forwards; }
+.hero-title { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem, 5.5vw, 5rem); font-weight: 800; line-height: 1; letter-spacing: -.03em; margin-bottom: 1rem; opacity: 0; animation: fadeUp .8s .4s forwards; }
 .hero-title .lyv { color: var(--teal); position: relative; display: inline-block; }
 .hero-title .lyv::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px; background: var(--teal); transform: scaleX(0); animation: lineGrow 1s 1.5s forwards; transform-origin: left; }
-.hero-sub { font-size: clamp(1rem, 1.8vw, 1.25rem); font-weight: 300; color: var(--gray); line-height: 1.8; max-width: 580px; margin: 0 auto 2.2rem; opacity: 0; animation: fadeUp .8s .6s forwards; }
+.hero-sub { font-size: clamp(.9rem, 1.5vw, 1.1rem); font-weight: 300; color: var(--gray); line-height: 1.8; max-width: 580px; margin: 0 auto 1.6rem; opacity: 0; animation: fadeUp .8s .6s forwards; }
 .hero-sub strong { color: var(--white); font-weight: 500; }
 .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp .8s .8s forwards; }
 .btn-primary { background: var(--teal); color: var(--white); padding: .9rem 2rem; border-radius: 8px; font-weight: 600; font-size: .95rem; transition: all .2s; border: none; cursor: pointer; }
@@ -264,7 +264,7 @@ html, body {
 .polaroid-scatter {
   position: relative;
   width: 100%;
-  height: 540px;
+  height: 980px;
 }
 .polaroid {
   position: absolute;
@@ -282,8 +282,8 @@ html, body {
 }
 .polaroid img {
   display: block;
-  width: 200px;
-  height: 200px;
+  width: 400px;
+  height: 400px;
   object-fit: cover;
 }
 .polaroid-label {
@@ -576,23 +576,23 @@ html, body {
             <img src="images/cooking-class-bangkok.jpg" alt="Thailand">
             <div class="polaroid-label">Cooking Class<br>Bangkok, Thailand</div>
           </div>
-          <div class="polaroid" style="top:20px;left:220px;transform:rotate(3deg);" onclick="openPhoto('images/muay-thai-bangkok.jpg','Muay Thai Training · Bangkok, Thailand')">
+          <div class="polaroid" style="top:20px;left:440px;transform:rotate(3deg);" onclick="openPhoto('images/muay-thai-bangkok.jpg','Muay Thai Training · Bangkok, Thailand')">
             <img src="images/muay-thai-bangkok.jpg" alt="Muay Thai">
             <div class="polaroid-label">Muay Thai Training<br>Bangkok, Thailand</div>
           </div>
-          <div class="polaroid" style="top:15px;left:440px;transform:rotate(-2deg);" onclick="openPhoto('images/gladiator-rome.jpg','Gladiator Experience · Rome, Italy')">
+          <div class="polaroid" style="top:15px;left:870px;transform:rotate(-2deg);" onclick="openPhoto('images/gladiator-rome.jpg','Gladiator Experience · Rome, Italy')">
             <img src="images/gladiator-rome.jpg" alt="Family">
             <div class="polaroid-label">Gladiator Experience<br>Rome, Italy</div>
           </div>
-          <div class="polaroid" style="top:270px;left:20px;transform:rotate(4deg);" onclick="openPhoto('images/leaning-tower-pisa.jpg','Leaning Tower of Pisa · Pisa, Italy')">
+          <div class="polaroid" style="top:500px;left:20px;transform:rotate(4deg);" onclick="openPhoto('images/leaning-tower-pisa.jpg','Leaning Tower of Pisa · Pisa, Italy')">
             <img src="images/leaning-tower-pisa.jpg" alt="Together">
             <div class="polaroid-label">Leaning Tower of Pisa<br>Pisa, Italy</div>
           </div>
-          <div class="polaroid" style="top:265px;left:230px;transform:rotate(-3deg);" onclick="openPhoto('images/cinque-terre-vernazza.jpg','Vernazza · Cinque Terre, Italy')">
+          <div class="polaroid" style="top:495px;left:455px;transform:rotate(-3deg);" onclick="openPhoto('images/cinque-terre-vernazza.jpg','Vernazza · Cinque Terre, Italy')">
             <img src="images/cinque-terre-vernazza.jpg" alt="Always Moving">
             <div class="polaroid-label">Vernazza<br>Cinque Terre, Italy</div>
           </div>
-          <div class="polaroid" style="top:275px;left:450px;transform:rotate(2deg);" onclick="openPhoto('images/sophias-first-communion.jpg','Sophia\'s First Communion')">
+          <div class="polaroid" style="top:505px;left:880px;transform:rotate(2deg);" onclick="openPhoto('images/sophias-first-communion.jpg','Sophia\'s First Communion')">
             <img src="images/sophias-first-communion.jpg" alt="Home">
             <div class="polaroid-label">Sophia's First Communion<br>Home</div>
           </div>
