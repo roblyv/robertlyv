@@ -81,19 +81,78 @@
   }
   .modal-overlay.open { display: flex; }
 
+  /* PHONE FRAME */
+  .phone-frame {
+    position: relative;
+    background: #111;
+    border-radius: 48px;
+    padding: 14px;
+    box-shadow:
+      0 0 0 2px #333,
+      0 0 0 4px #1a1a1a,
+      0 30px 80px rgba(0,0,0,.8),
+      0 0 60px rgba(232,255,71,0.06);
+    width: 100%;
+    max-width: 400px;
+  }
+  .phone-notch {
+    width: 120px;
+    height: 28px;
+    background: #111;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .phone-notch-cam {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+  }
+  .phone-notch-speaker {
+    width: 50px; height: 5px;
+    border-radius: 3px;
+    background: #1e1e1e;
+  }
+  .phone-home {
+    width: 120px; height: 4px;
+    border-radius: 2px;
+    background: #333;
+    margin: 10px auto 0;
+  }
+  .phone-btn-vol {
+    position: absolute;
+    left: -3px;
+    width: 3px;
+    border-radius: 2px 0 0 2px;
+    background: #222;
+  }
+  .phone-btn-vol.v1 { top: 100px; height: 32px; }
+  .phone-btn-vol.v2 { top: 142px; height: 32px; }
+  .phone-btn-pwr {
+    position: absolute;
+    right: -3px;
+    top: 120px;
+    width: 3px;
+    height: 56px;
+    border-radius: 0 2px 2px 0;
+    background: #222;
+  }
+
   /* APP SHELL */
   .app-shell {
     width: 100%;
-    max-width: 480px;
-    height: 90vh;
-    max-height: 860px;
+    height: 75vh;
+    max-height: 760px;
     background: var(--bg);
-    border: 1px solid var(--brd);
+    border-radius: 36px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 0 80px rgba(232,255,71,0.08);
   }
 
   /* CLOSE BTN */
@@ -447,8 +506,17 @@
 
 <!-- MODAL -->
 <div class="modal-overlay" id="demoModal">
-  <div class="app-shell">
-    <button class="close-btn" onclick="closeDemo()">✕</button>
+  <div class="phone-frame">
+    <div class="phone-btn-vol v1"></div>
+    <div class="phone-btn-vol v2"></div>
+    <div class="phone-btn-pwr"></div>
+    <div class="phone-notch">
+      <div class="phone-notch-cam"></div>
+      <div class="phone-notch-speaker"></div>
+      <div class="phone-notch-cam"></div>
+    </div>
+    <div class="app-shell">
+      <button class="close-btn" onclick="closeDemo()">✕</button>
 
     <!-- HEADER -->
     <div class="app-header">
@@ -739,6 +807,8 @@
       </div>
 
     </div>
+  </div>
+    <div class="phone-home"></div>
   </div>
 </div>
 
