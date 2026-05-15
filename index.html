@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Robert Lyv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0D1B2A;
+  --slate:#0F1E2E;
+  --teal:#0D9488;
+  --teal-light:#14B8A6;
+  --gold:#F59E0B;
+  --white:#F8FAFC;
+  --gray:#94A3B8;
+  --dark:#060D14;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--white);
+}
+
+/* ── DECK WRAPPER ──
+   Desktop: horizontal row, JS translates X
+   Mobile:  vertical column, native scroll  */
+#deck {
+  display: flex;
+  flex-direction: row;
+  width: calc(9 * 100vw);
+  height: 100vh;
+  transition: transform .65s cubic-bezier(.77,0,.18,1);
+  will-change: transform;
+}
+
+.slide {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 6rem 5rem 3.5rem;
+  scrollbar-width: none;
+}
+.slide::-webkit-scrollbar { display: none; }
+
+/* ── TOP BAR ── */
+#topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem 2rem;
+  background: rgba(6,13,20,.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(13,148,136,.12);
+}
+.bar-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--white);
+}
+.bar-logo span { color: var(--teal); }
+.bar-counter {
+  font-family: 'Syne', sans-serif;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--gray);
+  letter-spacing: .08em;
+}
+.bar-counter em { color: var(--teal); font-style: normal; }
+
+/* ── DOT INDICATORS ── */
+#dots {
+  position: fixed;
+  z-index: 200;
+  right: 1.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  cursor: pointer;
+  transition: all .3s;
+  border: none; padding: 0;
+}
+.dot.active {
+  background: var(--teal);
+  transform: scale(1.45);
+  box-shadow: 0 0 10px rgba(13,148,136,.7);
+}
+
+/* ── ARROWS ── */
+.arrow {
+  position: fixed;
+  z-index: 200;
+  background: rgba(13,148,136,.1);
+  border: 1px solid rgba(13,148,136,.22);
+  color: var(--white);
+  border-radius: 50%;
+  width: 42px; height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 1rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.arrow:hover { background: rgba(13,148,136,.28); border-color: var(--teal); }
+.arrow:disabled { opacity: .18; cursor: default; pointer-events: none; }
+#arrowPrev { left: 1.1rem; top: 50%; transform: translateY(-50%); }
+#arrowNext { right: 3.25rem; top: 50%; transform: translateY(-50%); }
+
+/* ── SLIDE BACKGROUNDS ── */
+.slide-hero   { background: radial-gradient(ellipse at 20% 50%, rgba(13,148,136,.16) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(245,158,11,.08) 0%, transparent 50%), var(--dark); }
+.slide-about  { background: var(--slate); }
+.slide-career { background: var(--dark); align-items: flex-start; }
+.slide-wins   { background: var(--slate); }
+.slide-builds { background: var(--dark); }
+.slide-life   { background: var(--slate); }
+.slide-family { background: var(--slate); }
+.slide-connect{ background: var(--dark); }
+
+/* ── SHARED TYPE ── */
+.section-label { font-size: .82rem; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: var(--teal); margin-bottom: .8rem; }
+.section-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 3.2vw, 3rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 1.25rem; }
+.section-title span { color: var(--teal); }
+.slide-inner { width: 100%; max-width: 1200px; }
+
+/* ── HERO ── */
+.hero-content { text-align: center; max-width: 860px; margin: 0 auto; }
+.hero-eyebrow { font-size: .85rem; font-weight: 500; letter-spacing: .25em; text-transform: uppercase; color: var(--teal); margin-bottom: 1.4rem; opacity: 0; animation: fadeUp .8s .2s forwards; }
+.hero-title { font-family: 'Syne', sans-serif; font-size: clamp(3.2rem, 7vw, 6.5rem); font-weight: 800; line-height: 1; letter-spacing: -.03em; margin-bottom: 1.3rem; opacity: 0; animation: fadeUp .8s .4s forwards; }
+.hero-title .lyv { color: var(--teal); position: relative; display: inline-block; }
+.hero-title .lyv::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px; background: var(--teal); transform: scaleX(0); animation: lineGrow 1s 1.5s forwards; transform-origin: left; }
+.hero-sub { font-size: clamp(1rem, 1.8vw, 1.25rem); font-weight: 300; color: var(--gray); line-height: 1.8; max-width: 580px; margin: 0 auto 2.2rem; opacity: 0; animation: fadeUp .8s .6s forwards; }
+.hero-sub strong { color: var(--white); font-weight: 500; }
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp .8s .8s forwards; }
+.btn-primary { background: var(--teal); color: var(--white); padding: .9rem 2rem; border-radius: 8px; font-weight: 600; font-size: .95rem; transition: all .2s; border: none; cursor: pointer; }
+.btn-primary:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,.3); }
+.btn-ghost { border: 1.5px solid rgba(255,255,255,.2); color: var(--white); padding: .9rem 2rem; border-radius: 8px; font-weight: 500; font-size: .95rem; transition: all .2s; background: none; cursor: pointer; }
+.btn-ghost:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); }
+.particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.particle { position: absolute; width: 2px; height: 2px; background: var(--teal); border-radius: 50%; animation: float linear infinite; opacity: 0; }
+
+/* ── ABOUT ── */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; margin-top: 1.25rem; }
+.about-text p { color: var(--gray); line-height: 1.85; margin-bottom: 1rem; font-size: 1rem; }
+.about-text p strong { color: var(--white); font-weight: 500; }
+.about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.4rem; }
+.stat { background: rgba(13,148,136,.07); border: 1px solid rgba(13,148,136,.2); border-radius: 10px; padding: 1.1rem 1.25rem; }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--teal); letter-spacing: -.02em; }
+.stat-label { font-size: .82rem; color: var(--gray); margin-top: .2rem; }
+.about-visual { display: flex; flex-direction: column; gap: .85rem; }
+.about-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 12px; padding: 1.15rem 1.3rem; transition: all .3s; }
+.about-card:hover { border-color: var(--teal); background: rgba(13,148,136,.06); transform: translateX(6px); }
+.about-card-icon { font-size: 1.3rem; margin-bottom: .4rem; }
+.about-card-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: .25rem; }
+.about-card-text { font-size: .87rem; color: var(--gray); line-height: 1.65; }
+
+/* ── CAREER ── */
+.timeline { position: relative; padding-left: 1.6rem; margin-top: 1.25rem; }
+.timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--teal), rgba(13,148,136,.05)); }
+.tl-item { position: relative; margin-bottom: 1.1rem; padding-left: 1.6rem; }
+.tl-dot { position: absolute; left: -2.1rem; top: .35rem; width: 9px; height: 9px; border-radius: 50%; background: var(--teal); border: 2px solid var(--dark); box-shadow: 0 0 0 3px rgba(13,148,136,.2); }
+.tl-date { font-size: .72rem; font-weight: 600; color: var(--teal); letter-spacing: .06em; text-transform: uppercase; margin-bottom: .2rem; }
+.tl-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: .1rem; }
+.tl-co { font-size: .85rem; color: var(--gray); margin-bottom: .3rem; }
+.tl-desc { font-size: .85rem; color: var(--gray); line-height: 1.65; }
+.tl-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .5rem; }
+.tl-tag { background: rgba(13,148,136,.08); border: 1px solid rgba(13,148,136,.18); color: var(--teal); font-size: .72rem; padding: .15rem .5rem; border-radius: 4px; }
+
+
+/* ── CAREER 2-COL ── */
+.timeline-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem; margin-top: 1.25rem; }
+.timeline-2col .timeline { margin-top: 0; }
+
+/* ── CERTS ── */
+.certs-row { display: flex; align-items: baseline; gap: 1rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(13,148,136,.15); flex-wrap: wrap; }
+.cert-label { font-family: "Syne", sans-serif; font-size: .78rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: .12em; white-space: nowrap; }
+.cert-item { background: rgba(13,148,136,.08); border: 1px solid rgba(13,148,136,.18); color: var(--gray); font-size: .8rem; padding: .25rem .75rem; border-radius: 4px; }
+.cert-items { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+/* ── WINS ── */
+.wins-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+.win-card { background: var(--dark); border: 1px solid rgba(255,255,255,.05); border-radius: 14px; padding: 1.6rem; transition: all .3s; position: relative; overflow: hidden; }
+.win-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, rgba(13,148,136,.1), transparent 60%); opacity: 0; transition: opacity .3s; }
+.win-card:hover::before { opacity: 1; }
+.win-card:hover { border-color: rgba(13,148,136,.3); transform: translateY(-3px); }
+.win-num { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; color: var(--teal); letter-spacing: -.03em; line-height: 1; }
+.win-label { font-family: 'Syne', sans-serif; font-size: .92rem; font-weight: 700; margin: .45rem 0 .3rem; color: var(--white); }
+.win-desc { font-size: .85rem; color: var(--gray); line-height: 1.65; }
+
+/* ── BUILDS ── */
+.builds-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.25rem; }
+.build-card { background: var(--slate); border: 1px solid rgba(255,255,255,.05); border-radius: 14px; padding: 1.4rem; transition: all .3s; }
+.build-card:hover { border-color: var(--teal); transform: translateY(-3px); }
+.build-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(13,148,136,.12); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: .75rem; }
+.build-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: .35rem; }
+.build-desc { font-size: .85rem; color: var(--gray); line-height: 1.65; margin-bottom: .75rem; }
+.build-stack { display: flex; flex-wrap: wrap; gap: .3rem; }
+.build-tech { background: rgba(255,255,255,.05); color: var(--gray); font-size: .72rem; padding: .15rem .5rem; border-radius: 4px; }
+
+/* ── LIFE ── */
+.life-intro { font-size: 1rem; color: var(--gray); line-height: 1.85; max-width: 680px; margin-bottom: 1.6rem; }
+.life-intro strong { color: var(--white); font-weight: 500; }
+.life-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; }
+.life-card { border-radius: 14px; padding: clamp(.75rem, 1.5vw, 1.35rem); position: relative; overflow: hidden; min-height: 130px; height: auto; display: flex; flex-direction: column; justify-content: center; transition: transform .3s; }
+.life-card:hover { transform: scale(1.025); }
+.life-card-bg { position: absolute; inset: 0; opacity: .15; transition: opacity .3s; }
+.life-card:hover .life-card-bg { opacity: .28; }
+.life-card.philly { background: linear-gradient(135deg,#003087,#003f7f); }
+.life-card.philly .life-card-bg { background: linear-gradient(135deg,#003087,#D50A0A); }
+.life-card.fitness { background: linear-gradient(135deg,#0D2818,#0F3D20); }
+.life-card.fitness .life-card-bg { background: linear-gradient(135deg,#0D9488,#059669); }
+.life-card.travel { background: linear-gradient(135deg,#1a1a2e,#16213e); }
+.life-card.travel .life-card-bg { background: linear-gradient(135deg,#F59E0B,#D97706); }
+.life-card.build { background: linear-gradient(135deg,#0F1E2E,#1a3a5c); }
+.life-card.build .life-card-bg { background: linear-gradient(135deg,#0D9488,#0891B2); }
+.life-card.golf { background: linear-gradient(135deg,#0D2818,#1a3d20); }
+.life-card.golf .life-card-bg { background: linear-gradient(135deg,#22C55E,#16A34A); }
+.life-card.family { background: linear-gradient(135deg,#1a0d2e,#2d1b4e); }
+.life-card.family .life-card-bg { background: linear-gradient(135deg,#8B5CF6,#7C3AED); }
+.life-card.sports { background: linear-gradient(135deg,#1a0d0d,#2e1a0e); }
+.life-card.sports .life-card-bg { background: linear-gradient(135deg,#F59E0B,#B45309); }
+.life-card.faith { background: linear-gradient(135deg,#0d1a2e,#0f2040); }
+.life-card.faith .life-card-bg { background: linear-gradient(135deg,#6366F1,#4F46E5); }
+.life-card.sports { background: linear-gradient(135deg,#1a0d0d,#2e1a0e); }
+.life-card.sports .life-card-bg { background: linear-gradient(135deg,#F59E0B,#B45309); }
+.life-card.faith { background: linear-gradient(135deg,#0d1a2e,#0f2040); }
+.life-card.faith .life-card-bg { background: linear-gradient(135deg,#6366F1,#4F46E5); }
+.life-card-emoji { font-size: clamp(1.1rem, 2vw, 1.6rem); margin-bottom: .35rem; position: relative; z-index: 1; }
+.life-card-title { font-family: 'Syne', sans-serif; font-size: clamp(.78rem, 1.2vw, 1rem); font-weight: 700; position: relative; z-index: 1; }
+.life-card-sub { font-size: clamp(.68rem, .95vw, .82rem); color: rgba(255,255,255,.6); margin-top: .2rem; position: relative; z-index: 1; line-height: 1.5; }
+
+
+/* ── FAMILY ── */
+.family-layout { display: grid; grid-template-columns: 1fr 1.7fr; gap: 3.5rem; align-items: center; margin-top: 1.25rem; }
+.family-text p { font-size: 1rem; color: var(--gray); line-height: 1.9; margin-bottom: 1rem; }
+.family-text p strong { color: var(--white); font-weight: 500; }
+.family-names { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--white); margin-bottom: 1rem; line-height: 1.2; }
+.family-names span { color: var(--teal); }
+
+/* Polaroid scatter */
+.polaroid-scatter {
+  position: relative;
+  width: 100%;
+  height: 540px;
+}
+.polaroid {
+  position: absolute;
+  background: #fff;
+  padding: 8px 8px 28px 8px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.45);
+  transition: transform .3s ease, box-shadow .3s ease, z-index 0s;
+  cursor: pointer;
+  z-index: 1;
+}
+.polaroid:hover {
+  transform: rotate(0deg) scale(1.08) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,.6);
+  z-index: 10;
+}
+.polaroid img {
+  display: block;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+.polaroid-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .6rem;
+  color: #555;
+  text-align: center;
+  margin-top: 6px;
+  letter-spacing: .05em;
+}
+
+
+/* ── FUTURE ENTRY GLOW ── */
+.tl-dot-future {
+  position: absolute; left: -2.1rem; top: .35rem;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--teal);
+  border: 2px solid var(--dark);
+  box-shadow: 0 0 0 3px rgba(13,148,136,.3);
+  animation: futurePulse 2s ease-in-out infinite;
+}
+.tl-item-future .tl-date { color: var(--teal-light); }
+.tl-item-future .tl-title { color: var(--teal-light); }
+.tl-item-future .tl-desc { color: rgba(248,250,252,.5); font-style: italic; }
+.tl-line-future::before { background: linear-gradient(to bottom, rgba(13,148,136,.3), transparent); }
+@keyframes futurePulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(13,148,136,.3), 0 0 12px rgba(13,148,136,.4); }
+  50% { box-shadow: 0 0 0 6px rgba(13,148,136,.15), 0 0 24px rgba(13,148,136,.6); }
+}
+
+/* ── JOURNEY TIMELINE ── */
+.journey-timeline { position: relative; padding-left: 1.6rem; margin-top: 1.25rem; }
+.journey-timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--teal), rgba(13,148,136,.1), transparent); }
+.journey-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2.5rem; margin-top: .75rem; }
+.journey-2col .journey-timeline { margin-top: 0; }
+
+/* ── LEADERSHIP ── */
+.slide-leadership { background: var(--dark); }
+.leadership-opener { font-size: 1.05rem; color: var(--gray); line-height: 1.9; max-width: 720px; margin-bottom: 1.75rem; border-left: 2px solid var(--teal); padding-left: 1.1rem; font-style: italic; }
+.leadership-opener strong { color: var(--white); font-style: normal; }
+.leadership-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.leadership-card { background: var(--slate); border: 1px solid rgba(255,255,255,.05); border-radius: 14px; padding: 1.6rem; transition: all .3s; }
+.leadership-card:hover { border-color: var(--teal); transform: translateY(-3px); }
+.leadership-card-icon { font-size: 1.5rem; margin-bottom: .7rem; }
+.leadership-card-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: .45rem; color: var(--white); }
+.leadership-card-text { font-size: .88rem; color: var(--gray); line-height: 1.75; }
+
+/* ── CLOSE SLIDE ── */
+.slide-close { background: var(--dark); }
+.close-inner { text-align: center; max-width: 600px; margin: 0 auto; }
+.close-headline { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 4.5vw, 3.6rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 1.25rem; }
+.close-headline span { color: var(--teal); }
+.close-body { font-size: 1.05rem; color: var(--gray); line-height: 1.9; margin-bottom: 2.5rem; max-width: 520px; margin-left: auto; margin-right: auto; }
+.close-body strong { color: var(--white); font-weight: 500; }
+.close-links { display: flex; justify-content: center; gap: .9rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+.close-foot { color: var(--gray); font-size: .8rem; }
+.close-foot strong { color: var(--teal); }
+
+/* ── CONNECT ── */
+.connect-inner { text-align: center; max-width: 540px; margin: 0 auto; }
+.connect-sub { color: var(--gray); line-height: 1.85; margin-bottom: 2.25rem; font-size: 1rem; }
+.connect-links { display: flex; justify-content: center; gap: .9rem; flex-wrap: wrap; }
+.connect-link { display: flex; align-items: center; gap: .5rem; padding: .85rem 1.5rem; border-radius: 10px; border: 1.5px solid rgba(255,255,255,.1); color: var(--white); text-decoration: none; font-size: .95rem; font-weight: 500; transition: all .2s; }
+.connect-link:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-2px); background: rgba(13,148,136,.05); }
+.connect-link span { font-size: 1.1rem; }
+.connect-foot { margin-top: 2.5rem; color: var(--gray); font-size: .8rem; }
+.connect-foot strong { color: var(--teal); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lineGrow { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+@keyframes float { 0%{transform:translateY(100vh);opacity:0} 10%{opacity:.5} 90%{opacity:.2} 100%{transform:translateY(-100px) translateX(30px);opacity:0} }
+
+/* ─────────────────────────────────────
+   MOBILE: natural body scroll, top-down
+───────────────────────────────────── */
+@media (max-width: 768px) {
+  html, body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    scroll-snap-type: y mandatory;
+  }
+
+  #deck {
+    flex-direction: column;
+    width: 100vw;
+    height: auto;
+    overflow: visible;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .slide {
+    width: 100vw;
+    min-height: 100svh;
+    height: auto;
+    flex-shrink: 0;
+    overflow-y: visible;
+    scroll-snap-align: start;
+    padding: 5rem 1.25rem 4rem;
+    align-items: flex-start;
+  }
+
+  /* hide desktop controls */
+  #arrowPrev, #arrowNext, #dots { display: none; }
+
+  /* mobile dots at bottom */
+  #dots-mobile {
+    position: fixed;
+    bottom: 1.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+    z-index: 200;
+  }
+  #dots-mobile .dot { pointer-events: none; }
+
+  .bar-counter { display: none; }
+
+  /* responsive grids */
+  .about-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+  .wins-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .builds-grid { grid-template-columns: 1fr; gap: .75rem; }
+  .life-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .about-stats { grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .family-layout { grid-template-columns: 1fr; gap: 1.75rem; }
+  .polaroid-scatter {
+    position: static;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .6rem;
+  }
+  .polaroid {
+    position: static !important;
+    transform: none !important;
+    width: 100%;
+  }
+  .polaroid img { width: 100%; height: auto; aspect-ratio: 1/1; }
+  .polaroid-label { font-size: .55rem; }
+  .timeline-2col { grid-template-columns: 1fr; }
+  .journey-2col { grid-template-columns: 1fr; }
+  .leadership-grid { grid-template-columns: 1fr; }
+  .win-num { font-size: 1.8rem; }
+  .section-title { font-size: 1.8rem; }
+}
+
+/* ── BUILD CTA ── */
+.build-cta { margin-top: .6rem; font-size: .78rem; font-weight: 600; color: var(--teal); letter-spacing: .05em; }
+.build-card { cursor: pointer; }
+
+/* ── LIGHTBOX ── */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+}
+#lightbox.open { display: flex; }
+.lb-modal {
+  background: var(--slate);
+  border: 1px solid rgba(13,148,136,.25);
+  border-radius: 18px;
+  max-width: 680px;
+  width: 90%;
+  padding: 2rem;
+  position: relative;
+  animation: fadeUp .3s ease forwards;
+}
+.lb-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--white);
+  border-radius: 50%;
+  width: 34px; height: 34px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.lb-close:hover { background: rgba(13,148,136,.2); border-color: var(--teal); }
+.lb-img-wrap {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: rgba(255,255,255,.04);
+  border: 2px dashed rgba(13,148,136,.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+.lb-img-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.lb-placeholder { color: var(--gray); font-size: .85rem; text-align: center; line-height: 1.7; }
+.lb-title { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: .4rem; }
+.lb-desc { font-size: .9rem; color: var(--gray); line-height: 1.75; }
+
+@media (max-width: 420px) {
+  .wins-grid { grid-template-columns: 1fr; }
+  .builds-grid { grid-template-columns: 1fr; }
+  .life-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="bar-logo">Lyv<span>.</span></div>
+  <div class="bar-counter"><em id="currentSlide">1</em> / 9</div>
+</div>
+
+<!-- DOTS (desktop, right side) -->
+<div id="dots"></div>
+
+<!-- DOTS (mobile, bottom) -->
+<div id="dots-mobile"></div>
+
+<!-- ARROWS (desktop only) -->
+<button class="arrow" id="arrowPrev" onclick="prevSlide()" aria-label="Previous">&#8592;</button>
+<button class="arrow" id="arrowNext" onclick="nextSlide()" aria-label="Next">&#8594;</button>
+
+<!-- DECK -->
+<div id="deck">
+
+  <!-- 1: HERO -->
+  <section class="slide slide-hero">
+    <div class="particles" id="particles"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Principal CSAM · Microsoft · Builder · Leader</div>
+      <h1 class="hero-title">I don't just show up.<br>I <span class="lyv">Lyv</span> it.</h1>
+      <p class="hero-sub">I build things that matter: <strong>teams, technology, and experiences worth having.</strong> 21 years of making complex problems look easy, one deliberate move at a time.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="goToSlide(1)">My Story</button>
+        <button class="btn-ghost" onclick="goToSlide(8)">Let's Connect</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2: ABOUT -->
+  <section class="slide slide-about">
+    <div class="slide-inner">
+      <div class="section-label">Who I Am</div>
+      <h2 class="section-title">More than a <span>résumé</span></h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I'm a <strong>Philly kid who grew up to lead some of the most complex technology transformations in the country</strong> — from defense programs to cancer centers and state governments. I didn't take the traditional path, and I think that's exactly why it works.</p>
+          <p>At Microsoft, I am a Principal Customer Success Account Manager in the State, Local Government and Education (SLED) organization, coaching a team, managing a multi-million dollar FY26 Microsoft Unified portfolio, and making sure that when the state needs Microsoft to show up, we show up right.</p>
+          <p>But I've never been just the job. I build apps in my spare time, run a laser engraving business with a partner, created a Junior MBA program for 6th graders in my town, and I'm probably already thinking about the next thing.</p>
+          <div class="about-stats">
+            <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Years at Microsoft</div></div>
+            <div class="stat"><div class="stat-num">10 yrs</div><div class="stat-label">Defense Industry</div></div>
+            <div class="stat"><div class="stat-num">$3M</div><div class="stat-label">FY26 Microsoft Unified Portfolio Managed</div></div>
+          </div>
+        </div>
+        <div class="about-visual">
+          <div class="about-card"><div class="about-card-icon">🔒</div><div class="about-card-title">The Trusted Advisor</div><div class="about-card-text">Customers call me when things matter. Regulated industries, high stakes, zero margin for error.</div></div>
+          <div class="about-card"><div class="about-card-icon">🏗️</div><div class="about-card-title">The Builder</div><div class="about-card-text">Full-stack apps, laser engraving, community programs — if it doesn't exist yet, I'll build it.</div></div>
+          <div class="about-card"><div class="about-card-icon">🔗</div><div class="about-card-title">The Connector</div><div class="about-card-text">I've spent a career bridging the gap between complex technology and the people who depend on it. I don't just open doors. I make sure the right people walk through them together.</div></div>
+          <div class="about-card"><div class="about-card-icon">🦅</div><div class="about-card-title">The Philly Kid</div><div class="about-card-text">Raised on grit, loyalty, and the belief that you always give everything you've got.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 2: FAMILY -->
+  <section class="slide slide-family">
+    <div class="slide-inner">
+      <div class="section-label">Home Base</div>
+      <h2 class="section-title">The reason I <span>Lyv</span>.</h2>
+      <div class="family-layout">
+        <div class="family-text">
+          <div class="family-names">Christine,<br>Ben <span>&</span> Sophia.</div>
+          <p>Before the portfolio, the titles, and the builds, there's Christine, Ben, and Sophia. <strong>My family is everything to me.</strong> We stay busy, we stay together, and we never run out of things to do. We love to travel the world and discover new experiences together.</p>
+        </div>
+<div class="polaroid-scatter">
+          <div class="polaroid" style="top:10px;left:0px;transform:rotate(-4deg);">
+            <img src="images/cooking-class-bangkok.jpg" alt="Thailand">
+            <div class="polaroid-label">Cooking Class<br>Bangkok, Thailand</div>
+          </div>
+          <div class="polaroid" style="top:20px;left:220px;transform:rotate(3deg);">
+            <img src="images/muay-thai-bangkok.jpg" alt="Muay Thai">
+            <div class="polaroid-label">Muay Thai Training<br>Bangkok, Thailand</div>
+          </div>
+          <div class="polaroid" style="top:15px;left:440px;transform:rotate(-2deg);">
+            <img src="images/gladiator-rome.jpg" alt="Family">
+            <div class="polaroid-label">Gladiator Experience<br>Rome, Italy</div>
+          </div>
+          <div class="polaroid" style="top:270px;left:20px;transform:rotate(4deg);">
+            <img src="images/leaning-tower-pisa.jpg" alt="Together">
+            <div class="polaroid-label">Leaning Tower of Pisa<br>Pisa, Italy</div>
+          </div>
+          <div class="polaroid" style="top:265px;left:230px;transform:rotate(-3deg);">
+            <img src="images/cinque-terre-vernazza.jpg" alt="Always Moving">
+            <div class="polaroid-label">Vernazza<br>Cinque Terre, Italy</div>
+          </div>
+          <div class="polaroid" style="top:275px;left:450px;transform:rotate(2deg);">
+            <img src="images/sophias-first-communion.jpg" alt="Home">
+            <div class="polaroid-label">Sophia's First Communion<br>Home</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- LEADERSHIP -->
+  <section class="slide slide-leadership">
+    <div class="slide-inner">
+      <div class="section-label">My Leadership Philosophy</div>
+      <h2 class="section-title">It always comes back to <span>people</span>.</h2>
+      <p class="leadership-opener">Every team has potential that isn't being reached. In my experience it almost always comes back to people. <strong>Are they clear on where they're going? Do they feel supported? Does someone actually see them?</strong> I start there. Every time.</p>
+      <div class="leadership-grid">
+        <div class="leadership-card">
+          <div class="leadership-card-icon">🔍</div>
+          <div class="leadership-card-title">Start by listening</div>
+          <div class="leadership-card-text">Before I have answers, I have questions. What's getting in your way? What would you do differently? What do you need that you're not getting? The best thing a leader can do early is make it safe to be honest, and then actually listen to what comes back.</div>
+        </div>
+        <div class="leadership-card">
+          <div class="leadership-card-icon">🎯</div>
+          <div class="leadership-card-title">Meet people where they are</div>
+          <div class="leadership-card-text">Not everyone on a team needs the same thing. Some people need challenge and autonomy. Some need clarity and support. Some are disengaged for a reason nobody's bothered to find out yet. I treat people as individuals, not an audience, and I adjust how I show up accordingly.</div>
+        </div>
+        <div class="leadership-card">
+          <div class="leadership-card-icon">🚀</div>
+          <div class="leadership-card-title">Elevate the whole team</div>
+          <div class="leadership-card-text">Individual growth compounds. When one person raises their game or unlocks something they didn't know they had, it shifts the dynamic for everyone around them. I'm not just developing people for their own sake. I'm building a team that makes each other better.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOURNEY -->
+  <section class="slide slide-career">
+    <div class="slide-inner">
+      <div class="section-label">The Journey</div>
+      <h2 class="section-title">Built from the <span>ground up</span>.</h2>
+      <div class="journey-2col">
+        <div class="journey-timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2003 · Central High School, Philadelphia</div>
+            <div class="tl-title">Bachelor of Arts</div>
+            <div class="tl-desc">One of the most competitive public high schools in the country. Graduated with a Bachelor of Arts. Where the work ethic was built.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2003 — 2006 · UMBC</div>
+            <div class="tl-title">B.S. Information Systems</div>
+            <div class="tl-desc">University of Maryland Baltimore County. Graduated Summa Cum Laude with a 4.0 GPA.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2005 — 2006 · Lockheed Martin</div>
+            <div class="tl-title">Software Engineer Intern</div>
+            <div class="tl-desc">Two summers during college. US Navy Ballistic Missile Defense System. First taste of building something real.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2007 — 2009 · Lockheed Martin</div>
+            <div class="tl-title">Operations Leadership Development Program</div>
+            <div class="tl-desc">Rotational leadership across engineering, quality, and manufacturing on U.S. Navy defense programs. Palm Beach, FL and Moorestown, NJ.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2009 — 2011 · Villanova University</div>
+            <div class="tl-title">Master of Business Administration</div>
+            <div class="tl-desc">GPA 3.7, focused on Finance, International Business & Strategic Management. International studies in Dubai, Beijing, and Seoul. Earned while working full time.</div>
+          </div>
+        </div>
+        <div class="journey-timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2009 — 2015 · Lockheed Martin</div>
+            <div class="tl-title">Senior Subcontracts Manager</div>
+            <div class="tl-desc">$114M+ in defense contracts. $12M+ in savings. U.S. Navy & Air Force programs.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2015 — 2017 · Microsoft — SLED</div>
+            <div class="tl-title">Technical Account Manager</div>
+            <div class="tl-desc">$600K Premier portfolio across K-12, higher ed, and state/local government.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2017 — 2022 · Microsoft — Healthcare & Life Sciences</div>
+            <div class="tl-title">Senior CSAM</div>
+            <div class="tl-desc">246% renewal attainment. $2.1M portfolio. Led Memorial Sloan Kettering telemedicine go-live. Supported St. Luke's COVID response. Served on Microsoft's disaster recovery team during COVID.</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-date">2022 — Present · Microsoft — SLED</div>
+            <div class="tl-title">Principal CSAM <span style="font-weight:400;color:var(--gray);font-size:.85rem;">(Senior CSAM 2022 – 2024)</span></div>
+            <div class="tl-desc">Leading at scale. Driving impact across State of New Jersey and City of Philadelphia. Currently managing a $3M Unified portfolio.</div>
+          </div>
+          <div class="tl-item tl-item-future">
+            <div class="tl-dot-future"></div>
+            <div class="tl-date">Next</div>
+            <div class="tl-title">The Next Chapter</div>
+            <div class="tl-desc">Leading a high-performing team. Developing people. Driving transformation at scale. Building something worth building, together.</div>
+          </div>
+        </div>
+      </div>
+      <div class="certs-row">
+        <div class="cert-label">Certifications</div>
+        <div class="cert-items">
+          <span class="cert-item">AI-900 Azure AI Fundamentals</span>
+          <span class="cert-item">AZ-900 Azure Fundamentals</span>
+          <span class="cert-item">MS-900 Microsoft 365 Fundamentals</span>
+          <span class="cert-item">Advanced Project Management · Stanford</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 4: WINS -->
+  <section class="slide slide-wins">
+    <div class="slide-inner">
+      <div class="section-label">The Numbers</div>
+      <h2 class="section-title">Impact that <span>speaks</span></h2>
+      <div class="wins-grid">
+        <div class="win-card"><div class="win-num">$3M</div><div class="win-label">Microsoft Unified Portfolio</div><div class="win-desc">Leading a five-member team supporting the State of New Jersey. Consistently delivering top-tier satisfaction, renewal, and secure cloud adoption across New Jersey and City of Philadelphia.</div></div>
+        <div class="win-card"><div class="win-num">$1.9M</div><div class="win-label">FY26 Renewals Landed</div><div class="win-desc">Continued to demonstrate Microsoft's value through deep customer partnerships and a relentless focus on outcomes.</div></div>
+        <div class="win-card"><div class="win-num">$114M+</div><div class="win-label">Lockheed Subcontracts</div><div class="win-desc">U.S. Navy and Air Force defense programs at Lockheed Martin. $12M+ in negotiated savings without compromising delivery or compliance.</div></div>
+        <div class="win-card"><div class="win-num">5x</div><div class="win-label">Hackathon Winner</div><div class="win-desc">Microsoft Global Hackathon winner. Fighting human trafficking, improving maternal health for women of color, and expanding accessibility through AI.</div></div>
+        <div class="win-card"><div class="win-num" style="font-size:1.5rem;">Junior MBA</div><div class="win-label">Founder</div><div class="win-desc">Created the East Greenwich Junior MBA, an entrepreneurship &amp; financial literacy program for middle schoolers, culminating in a live Shark Tank-style pitch event.</div></div>
+        <div class="win-card"><div class="win-num">$45K</div><div class="win-label">Raised for St. Jude</div><div class="win-desc">Co-led the auction at the Federal Give Golf Classic. $45K raised for kids fighting cancer.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5: BUILDS -->
+  <section class="slide slide-builds">
+    <div class="slide-inner">
+      <div class="section-label">What I Build</div>
+      <h2 class="section-title">Ideas that become <span>real things</span></h2>
+      <div class="builds-grid">
+        <div class="build-card" onclick="openLightbox('jrmba')"><div class="build-icon">🎓</div><div class="build-title">East Greenwich Junior MBA</div><div class="build-desc">Entrepreneurship & financial literacy for middle schoolers, culminating in "Hornet's Nest" — a live Shark Tank pitch event.</div><div class="build-stack"><span class="build-tech">Curriculum Design</span><span class="build-tech">Community</span><span class="build-tech">Mentorship</span></div><div class="build-cta">View ↗</div></div>
+        <div class="build-card" onclick="openLightbox('laser')"><div class="build-icon">✂️</div><div class="build-title">Cutting Edge Laser Works</div><div class="build-desc">Co-founded a custom laser engraving business. Client relations, production timelines, and quality control.</div><div class="build-stack"><span class="build-tech">Small Business</span><span class="build-tech">Operations</span><span class="build-tech">Manufacturing</span></div><div class="build-cta">View ↗</div></div>
+        <div class="build-card" onclick="openLightbox('p4p')"><div class="build-icon">⚖️</div><div class="build-title">Pound for Pound</div><div class="build-desc">A 12-week weight loss competition PWA for a group of friends. Real users, real leaderboards, real motivation — powered by GenAI daily motivation via Azure Functions and the Anthropic API.</div><div class="build-stack"><span class="build-tech">Firebase</span><span class="build-tech">PWA</span><span class="build-tech">Azure Functions</span><span class="build-tech">GenAI</span><span class="build-tech">REST APIs</span></div><div class="build-cta">View ↗</div></div>
+        <div class="build-card" onclick="openLightbox('lyv')"><div class="build-icon">🏃</div><div class="build-title">Lyv in Motion</div><div class="build-desc">Personal wellness PWA built from scratch. If you're going to track your fitness journey, you might as well build the app yourself.</div><div class="build-stack"><span class="build-tech">PWA</span><span class="build-tech">Firebase</span><span class="build-tech">JavaScript</span></div><div class="build-cta">View ↗</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6: LIFE -->
+  <section class="slide slide-life">
+    <div class="slide-inner">
+      <div class="section-label">Beyond the Resume</div>
+      <h2 class="section-title">This is how I <span>Lyv</span></h2>
+      <p class="life-intro">The job is what I do. <strong>This is who I am.</strong> Philly raised, always moving, never settling — whether it's on a golf course, a ski slope, or somewhere new with the people I love.</p>
+      <div class="life-grid">
+        <div class="life-card philly"><div class="life-card-bg"></div><div class="life-card-emoji">🦅</div><div class="life-card-title">Philly Bred</div><div class="life-card-sub">Raised on grit and loyalty. Eagles. Phillies. Sixers. Flyers. No fair weather fans here.</div></div>
+        <div class="life-card fitness"><div class="life-card-bg"></div><div class="life-card-emoji">💪</div><div class="life-card-title">Always Moving</div><div class="life-card-sub">Fitness, running, cycling, obstacle courses. Always in motion. If there's a finish line, a challenge, or a reason to push — I'm in.</div></div>
+        <div class="life-card sports"><div class="life-card-bg"></div><div class="life-card-emoji">🏆</div><div class="life-card-title">Sports Dad</div><div class="life-card-sub">Proudest seat is on the sideline. Watching the kids compete beats any professional game. Every time. No contest.</div></div>
+        <div class="life-card travel"><div class="life-card-bg"></div><div class="life-card-emoji">✈️</div><div class="life-card-title">Always Exploring</div><div class="life-card-sub">New cities, new experiences. Life's too short to stay comfortable.</div></div>
+        <div class="life-card build"><div class="life-card-bg"></div><div class="life-card-emoji">🔧</div><div class="life-card-title">Builder at Heart</div><div class="life-card-sub">Apps, laser engraving, community programs. If I have an idea, I build it.</div></div>
+        <div class="life-card faith"><div class="life-card-bg"></div><div class="life-card-emoji">✝️</div><div class="life-card-title">Faith & Community</div><div class="life-card-sub">Faith first. Catechist in the summer. Junior MBA in the school year. Giving back is non-negotiable.</div></div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- CLOSE -->
+  <section class="slide slide-close">
+    <div class="slide-inner">
+      <div class="close-inner">
+        <div class="section-label">The Bottom Line</div>
+        <h2 class="close-headline">This is <span>who I am</span>.</h2>
+        <p class="close-body">Someone who shows up, puts in the work, and never stops building. <strong>Driven by impact, grounded by family, and ready for what's next.</strong> I've spent my career learning how to drive impact — and I've done it. The next chapter is about multiplying that impact through others. Helping people grow, building something together, and winning as a team. That's where I'm headed.</p>
+        <div class="close-links">
+          <a href="https://linkedin.com/in/RobertLyv" class="connect-link"><span>💼</span> LinkedIn</a>
+          <a href="mailto:Robert.Lyv@microsoft.com" class="connect-link"><span>📧</span> Email</a>
+          <a href="Robert_Lyv_Resume.pdf" class="connect-link" target="_blank"><span>📄</span> Resume</a>
+        </div>
+        <p class="close-foot">© 2026 <strong>Robert Lyv</strong> · Built with intention · <strong>Lyv.</strong></p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /deck -->
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightboxOutside(event)">
+  <div class="lb-modal">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <div class="lb-img-wrap" id="lb-img-wrap">
+      <div class="lb-placeholder">📸 Screenshot coming soon</div>
+    </div>
+    <div class="lb-title" id="lb-title"></div>
+    <div class="lb-desc" id="lb-desc"></div>
+  </div>
+</div>
+
+<script>
+const TOTAL = 9;
+let current = 0;
+const isMobile = () => window.innerWidth <= 768;
+
+// ── BUILD DOTS ──
+function buildDots(containerId){
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  for(let i = 0; i < TOTAL; i++){
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', `Slide ${i+1}`);
+    if(containerId === 'dots') d.addEventListener('click', () => goToSlide(i));
+    el.appendChild(d);
+  }
+}
+buildDots('dots');
+buildDots('dots-mobile');
+
+// ── PARTICLES ──
+const pc = document.getElementById('particles');
+for(let i = 0; i < 40; i++){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.cssText = `left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*8}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px`;
+  pc.appendChild(p);
+}
+
+// ── NAVIGATE (desktop) ──
+function goToSlide(n){
+  if(isMobile()) return;
+  n = Math.max(0, Math.min(TOTAL - 1, n));
+  current = n;
+  document.getElementById('deck').style.transform = `translateX(-${n * 100}vw)`;
+  updateUI();
+}
+function nextSlide(){ goToSlide(current + 1); }
+function prevSlide(){ goToSlide(current - 1); }
+
+function updateUI(){
+  document.querySelectorAll('#dots .dot, #dots-mobile .dot').forEach((d,i) => d.classList.toggle('active', i % TOTAL === current));
+  document.getElementById('currentSlide').textContent = current + 1;
+  const prev = document.getElementById('arrowPrev');
+  const next = document.getElementById('arrowNext');
+  if(prev) prev.disabled = current === 0;
+  if(next) next.disabled = current === TOTAL - 1;
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if(isMobile()) return;
+  if(e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if(e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevSlide();
+});
+
+// ── WHEEL / TRACKPAD (desktop) ──
+let wheelLock = false;
+document.addEventListener('wheel', e => {
+  if(isMobile()) return;
+  if(wheelLock) return;
+  const slides = document.querySelectorAll('.slide');
+  const slide = slides[current];
+  const scrollable = slide.scrollHeight > slide.clientHeight + 4;
+  const atBottom = !scrollable || slide.scrollTop + slide.clientHeight >= slide.scrollHeight - 4;
+  const atTop    = !scrollable || slide.scrollTop <= 4;
+  if(e.deltaY > 0 && atBottom){ nextSlide(); wheelLock = true; setTimeout(()=>wheelLock=false, 900); }
+  if(e.deltaY < 0 && atTop)  { prevSlide(); wheelLock = true; setTimeout(()=>wheelLock=false, 900); }
+}, {passive: true});
+
+// ── TOUCH SWIPE (desktop wide touch / tablet landscape) ──
+let tx = 0, ty = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e => {
+  if(isMobile()) return;
+  const dx = tx - e.changedTouches[0].clientX;
+  const dy = ty - e.changedTouches[0].clientY;
+  if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50){ dx > 0 ? nextSlide() : prevSlide(); }
+}, {passive:true});
+
+// ── MOBILE: sync dots via IntersectionObserver (root: viewport) ──
+function setupMobileSync(){
+  const slides = document.querySelectorAll('.slide');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && entry.intersectionRatio >= 0.5){
+        current = Array.from(slides).indexOf(entry.target);
+        updateUI();
+      }
+    });
+  }, { root: null, threshold: 0.5 });
+  slides.forEach(s => io.observe(s));
+}
+// ── LIGHTBOX ──
+const lbData = {
+  jrmba: {
+    title: 'East Greenwich Junior MBA',
+    desc: 'Entrepreneurship & financial literacy program for 6th graders in East Greenwich, NJ. Students develop business plans and pitch live at "Hornet\'s Nest" — a Shark Tank-style event for the community.',
+    img: null // swap in: 'images/jrmba.jpg'
+  },
+  laser: {
+    title: 'Cutting Edge Laser Works',
+    desc: 'Co-founded custom laser engraving business. Handles client relations, production timelines, and quality control across a range of personalized products.',
+    img: null // swap in: 'images/laser.jpg'
+  },
+  ai: {
+    title: 'AI-Powered Apps',
+    desc: 'Multiple production apps built with Generative AI APIs, Firebase, Azure Functions, and JavaScript. Real users, real use cases — not just demos.',
+    img: null // swap in: 'images/ai-apps.jpg'
+  },
+  p4p: {
+    title: 'Pound for Pound',
+    desc: 'A 12-week weight loss competition PWA. Features real-time leaderboards, Google & Microsoft OAuth, daily AI-generated motivation via Azure Functions, and a fully custom admin dashboard.',
+    img: null // swap in: 'images/p4p.jpg'
+  },
+  lyv: {
+    title: 'Lyv in Motion',
+    desc: 'Personal wellness PWA built from scratch. Tracks fitness progress with a clean UI, Firebase backend, and full PWA support for mobile install.',
+    img: null // swap in: 'images/lyv.jpg'
+  }
+};
+
+function openLightbox(id) {
+  const d = lbData[id];
+  if (!d) return;
+  document.getElementById('lb-title').textContent = d.title;
+  document.getElementById('lb-desc').textContent = d.desc;
+  const wrap = document.getElementById('lb-img-wrap');
+  wrap.innerHTML = d.img
+    ? `<img src="${d.img}" alt="${d.title}">`
+    : `<div class="lb-placeholder">📸 Screenshot coming soon</div>`;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+function closeLightboxOutside(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+
+window.addEventListener('resize', () => {
+  if(!isMobile()){
+    document.getElementById('deck').style.transform = `translateX(-${current * 100}vw)`;
+  } else {
+    document.getElementById('deck').style.transform = '';
+  }
+});
+
+updateUI();
+</script>
+</body>
+</html>
