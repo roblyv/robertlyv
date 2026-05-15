@@ -571,27 +571,27 @@ html, body {
           <p>Before the portfolio, the titles, and the builds, there's Christine, Ben, and Sophia. <strong>My family is everything to me.</strong> We stay busy, we stay together, and we never run out of things to do. We love to travel the world and discover new experiences together.</p>
         </div>
 <div class="polaroid-scatter">
-          <div class="polaroid" style="top:10px;left:0px;transform:rotate(-4deg);">
+          <div class="polaroid" style="top:10px;left:0px;transform:rotate(-4deg);" onclick="openPhoto('images/cooking-class-bangkok.jpg','Cooking Class · Bangkok, Thailand')">
             <img src="images/cooking-class-bangkok.jpg" alt="Thailand">
             <div class="polaroid-label">Cooking Class<br>Bangkok, Thailand</div>
           </div>
-          <div class="polaroid" style="top:20px;left:220px;transform:rotate(3deg);">
+          <div class="polaroid" style="top:20px;left:220px;transform:rotate(3deg);" onclick="openPhoto('images/muay-thai-bangkok.jpg','Muay Thai Training · Bangkok, Thailand')">
             <img src="images/muay-thai-bangkok.jpg" alt="Muay Thai">
             <div class="polaroid-label">Muay Thai Training<br>Bangkok, Thailand</div>
           </div>
-          <div class="polaroid" style="top:15px;left:440px;transform:rotate(-2deg);">
+          <div class="polaroid" style="top:15px;left:440px;transform:rotate(-2deg);" onclick="openPhoto('images/gladiator-rome.jpg','Gladiator Experience · Rome, Italy')">
             <img src="images/gladiator-rome.jpg" alt="Family">
             <div class="polaroid-label">Gladiator Experience<br>Rome, Italy</div>
           </div>
-          <div class="polaroid" style="top:270px;left:20px;transform:rotate(4deg);">
+          <div class="polaroid" style="top:270px;left:20px;transform:rotate(4deg);" onclick="openPhoto('images/leaning-tower-pisa.jpg','Leaning Tower of Pisa · Pisa, Italy')">
             <img src="images/leaning-tower-pisa.jpg" alt="Together">
             <div class="polaroid-label">Leaning Tower of Pisa<br>Pisa, Italy</div>
           </div>
-          <div class="polaroid" style="top:265px;left:230px;transform:rotate(-3deg);">
+          <div class="polaroid" style="top:265px;left:230px;transform:rotate(-3deg);" onclick="openPhoto('images/cinque-terre-vernazza.jpg','Vernazza · Cinque Terre, Italy')">
             <img src="images/cinque-terre-vernazza.jpg" alt="Always Moving">
             <div class="polaroid-label">Vernazza<br>Cinque Terre, Italy</div>
           </div>
-          <div class="polaroid" style="top:275px;left:450px;transform:rotate(2deg);">
+          <div class="polaroid" style="top:275px;left:450px;transform:rotate(2deg);" onclick="openPhoto('images/sophias-first-communion.jpg','Sophia\'s First Communion')">
             <img src="images/sophias-first-communion.jpg" alt="Home">
             <div class="polaroid-label">Sophia's First Communion<br>Home</div>
           </div>
@@ -910,6 +910,14 @@ const lbData = {
     img: null // swap in: 'images/lyv.jpg'
   }
 };
+
+function openPhoto(src, title) {
+  document.getElementById('lb-title').textContent = title;
+  document.getElementById('lb-desc').textContent = '';
+  const wrap = document.getElementById('lb-img-wrap');
+  wrap.innerHTML = `<img src="${src}" alt="${title}" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:4px;">`;
+  document.getElementById('lightbox').classList.add('open');
+}
 
 function openLightbox(id) {
   const d = lbData[id];
