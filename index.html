@@ -868,6 +868,7 @@ document.addEventListener('keydown', e => {
 // ── WHEEL / TRACKPAD (desktop) ──
 let wheelLock = false;
 document.addEventListener('wheel', e => {
+  if(document.getElementById('lightbox').classList.contains('open')) return;
   if(isMobile()) return;
   if(wheelLock) return;
   const slides = document.querySelectorAll('.slide');
@@ -883,6 +884,7 @@ document.addEventListener('wheel', e => {
 let tx = 0, ty = 0;
 document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
 document.addEventListener('touchend', e => {
+  if(document.getElementById('lightbox').classList.contains('open')) return;
   if(isMobile()) return;
   const dx = tx - e.changedTouches[0].clientX;
   const dy = ty - e.changedTouches[0].clientY;
@@ -912,17 +914,17 @@ const lbData = {
         <img src="images/jrmba/hornet-jrmba.png" alt="Junior MBA Program" style="width:120px;height:120px;object-fit:contain;margin:0 auto .75rem;display:block;">
         <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.75rem;">East Greenwich Junior MBA</h2>
         <div onclick="openPhoto('images/jrmba/jrmba_group2026.jpg','East Greenwich Junior MBA — Class of 2026')" style="cursor:pointer;border-radius:10px;overflow:hidden;width:100%;margin-bottom:1.25rem;">
-          <img src="images/jrmba/jrmba_group2026.jpg" alt="Junior MBA Class of 2026" style="width:100%;height:220px;object-fit:cover;object-position:center top;transition:transform .3s;display:block;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="images/jrmba/jrmba_group2026.jpg" alt="Junior MBA Class of 2026" style="width:100%;height:220px;object-fit:cover;object-position:center bottom;transition:transform .3s;display:block;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
           <div style="background:#111;padding:.5rem .75rem;font-size:.75rem;color:#6b7280;text-align:left;">📸 Class of 2026 — Graduation Night</div>
         </div>
         <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto .9rem;">
-          I didn't wait for someone else to build it. I saw a gap — middle schoolers with no exposure to entrepreneurship, financial literacy, or real-world business thinking — and I built the program from scratch.
+          I saw an opportunity to expose 6th graders to entrepreneurship, financial literacy, and real-world business thinking — and I built the program from scratch.
         </p>
         <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto .9rem;">
-          Over 16 weeks, 30 students formed companies, developed business plans, managed budgets, and pitched live to a panel of judges at <em style="color:#fff;">The Hornet's Nest</em> — our version of Shark Tank. Seven guest speakers. Five high school mentors. One community that showed up.
+          Over 16 weeks, students learned how to spot opportunities, understand customers, build a brand, manage money, and think like a CEO. I brought in local business leaders and entrepreneurs as guest speakers, and with the support of high school mentors, each team built a company from the ground up — and pitched it live.
         </p>
         <p style="font-size:.9rem;color:#9ca3af;line-height:1.7;max-width:480px;margin:0 auto 1.25rem;">
-          This wasn't a class project. It was a real program, built by a dad who believed kids deserve to learn how the world actually works.
+          It all culminated at <em style="color:#fff;">The Hornet's Nest</em> — our version of Shark Tank — where teams presented to a live panel in front of their families and community. This wasn't a class project. It was a real program, built by a dad who believed kids deserve to learn how the world actually works.
         </p>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;text-align:center;">
           <div style="background:#111;border:1px solid #222;border-radius:10px;padding:.75rem;">
@@ -994,6 +996,7 @@ const lbData = {
 };
 
 function openPhoto(src, title) {
+  document.body.style.overflow = 'hidden';
   document.getElementById('lb-title').textContent = title;
   document.getElementById('lb-desc').textContent = '';
   const wrap = document.getElementById('lb-img-wrap');
@@ -1006,6 +1009,8 @@ function openPhoto(src, title) {
 }
 
 function openLightbox(id) {
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
   const d = lbData[id];
   if (!d) return;
   const box = document.querySelector('.lb-modal');
@@ -1040,6 +1045,7 @@ function openLightbox(id) {
   document.getElementById('lightbox').classList.add('open');
 }
 function closeLightbox() {
+  document.body.style.overflow = '';
   document.getElementById('lightbox').classList.remove('open');
   const box = document.querySelector('.lb-modal');
   box.style.maxWidth = '';
