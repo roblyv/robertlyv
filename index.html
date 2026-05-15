@@ -575,27 +575,27 @@ html, body {
         </div>
 <div class="polaroid-scatter">
           <div class="polaroid" style="top:10px;left:0px;transform:rotate(-4deg);" onclick="openPhoto('images/cooking-class-bangkok.jpg','Cooking Class · Bangkok, Thailand')">
-            <img src="images/cooking-class-bangkok.jpg" alt="Thailand">
+            <img src="images/cooking-class-bangkok.jpg" srcset="images/cooking-class-bangkok.jpg 2x" alt="Thailand">
             <div class="polaroid-label">Cooking Class<br>Bangkok, Thailand</div>
           </div>
           <div class="polaroid" style="top:20px;left:290px;transform:rotate(3deg);" onclick="openPhoto('images/muay-thai-bangkok.jpg','Muay Thai Training · Bangkok, Thailand')">
-            <img src="images/muay-thai-bangkok.jpg" alt="Muay Thai">
+            <img src="images/muay-thai-bangkok.jpg" srcset="images/muay-thai-bangkok.jpg 2x" alt="Muay Thai">
             <div class="polaroid-label">Muay Thai Training<br>Bangkok, Thailand</div>
           </div>
           <div class="polaroid" style="top:15px;left:570px;transform:rotate(-2deg);" onclick="openPhoto('images/gladiator-rome.jpg','Gladiator Experience · Rome, Italy')">
-            <img src="images/gladiator-rome.jpg" alt="Family">
+            <img src="images/gladiator-rome.jpg" srcset="images/gladiator-rome.jpg 2x" alt="Family">
             <div class="polaroid-label">Gladiator Experience<br>Rome, Italy</div>
           </div>
           <div class="polaroid" style="top:340px;left:20px;transform:rotate(4deg);" onclick="openPhoto('images/leaning-tower-pisa.jpg','Leaning Tower of Pisa · Pisa, Italy')">
-            <img src="images/leaning-tower-pisa.jpg" alt="Together">
+            <img src="images/leaning-tower-pisa.jpg" srcset="images/leaning-tower-pisa.jpg 2x" alt="Together">
             <div class="polaroid-label">Leaning Tower of Pisa<br>Pisa, Italy</div>
           </div>
           <div class="polaroid" style="top:335px;left:300px;transform:rotate(-3deg);" onclick="openPhoto('images/cinque-terre-vernazza.jpg','Vernazza · Cinque Terre, Italy')">
-            <img src="images/cinque-terre-vernazza.jpg" alt="Always Moving">
+            <img src="images/cinque-terre-vernazza.jpg" srcset="images/cinque-terre-vernazza.jpg 2x" alt="Always Moving">
             <div class="polaroid-label">Vernazza<br>Cinque Terre, Italy</div>
           </div>
           <div class="polaroid" style="top:345px;left:580px;transform:rotate(2deg);" onclick="openPhoto('images/sophias-first-communion.jpg','Sophia\'s First Communion')">
-            <img src="images/sophias-first-communion.jpg" alt="Home">
+            <img src="images/sophias-first-communion.jpg" srcset="images/sophias-first-communion.jpg 2x" alt="Home">
             <div class="polaroid-label">Sophia's First Communion<br>Home</div>
           </div>
         </div>
@@ -934,7 +934,7 @@ function openPhoto(src, title) {
   wrap.style.aspectRatio = 'unset';
   wrap.style.height = 'auto';
   wrap.innerHTML = `<img src="${src}" alt="${title}" style="width:100%;height:auto;max-height:80vh;object-fit:contain;border-radius:4px;">`;
-  const box = document.querySelector('.lightbox-box');
+  const box = document.querySelector('.lb-modal');
   box.style.maxWidth = '90vw';
   document.getElementById('lightbox').classList.add('open');
 }
@@ -952,7 +952,7 @@ function openLightbox(id) {
 }
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
-  const box = document.querySelector('.lightbox-box');
+  const box = document.querySelector('.lb-modal');
   box.style.maxWidth = '';
   const wrap = document.getElementById('lb-img-wrap');
   wrap.style.aspectRatio = '';
