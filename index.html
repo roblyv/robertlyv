@@ -170,8 +170,8 @@ html, body {
 .stat { background: rgba(13,148,136,.07); border: 1px solid rgba(13,148,136,.2); border-radius: 10px; padding: 1.1rem 1.25rem; }
 .stat-num { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--teal); letter-spacing: -.02em; }
 .stat-label { font-size: .82rem; color: var(--gray); margin-top: .2rem; }
-.about-visual { display: flex; flex-direction: column; gap: .85rem; }
-.about-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 12px; padding: 1.15rem 1.3rem; transition: all .3s; }
+.about-visual { display: flex; flex-direction: column; gap: .85rem; height: 100%; }
+.about-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 12px; padding: 1.15rem 1.3rem; transition: all .3s; flex: 1; }
 .about-card:hover { border-color: var(--teal); background: rgba(13,148,136,.06); transform: translateX(6px); }
 .about-card-icon { font-size: 1.3rem; margin-bottom: .4rem; }
 .about-card-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: .25rem; }
@@ -404,12 +404,13 @@ html, body {
     gap: .5rem;
     z-index: 200;
   }
-  #dots-mobile .dot { pointer-events: none; }
+  #dots-mobile .dot { pointer-events: all; cursor: pointer; }
 
   .bar-counter { display: none; }
 
   /* responsive grids */
   .about-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+  .about-visual { display: none; }
   .wins-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
   .builds-grid { grid-template-columns: 1fr; gap: .75rem; }
   .life-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
@@ -560,7 +561,6 @@ html, body {
           <div class="about-card"><div class="about-card-icon">🔒</div><div class="about-card-title">The Trusted Advisor</div><div class="about-card-text">Customers call me when things matter. Regulated industries, high stakes, zero margin for error.</div></div>
           <div class="about-card"><div class="about-card-icon">🏗️</div><div class="about-card-title">The Builder</div><div class="about-card-text">Full-stack apps, laser engraving, community programs — if it doesn't exist yet, I'll build it.</div></div>
           <div class="about-card"><div class="about-card-icon">🔗</div><div class="about-card-title">The Connector</div><div class="about-card-text">I've spent a career bridging the gap between complex technology and the people who depend on it. I don't just open doors. I make sure the right people walk through them together.</div></div>
-          <div class="about-card"><div class="about-card-icon">🦅</div><div class="about-card-title">The Philly Kid</div><div class="about-card-text">Raised on grit, loyalty, and the belief that you always give everything you've got.</div></div>
         </div>
       </div>
     </div>
@@ -568,47 +568,33 @@ html, body {
 
 
   <!-- 2: FAMILY -->
-  <section class="slide slide-family">
+
+  <!-- 3: IMPACT -->
+  <section class="slide slide-wins">
     <div class="slide-inner">
-      <div class="section-label">Home Base</div>
-      <h2 class="section-title">The reason I <span>Lyv</span>.</h2>
-      <div class="family-layout">
-        <div class="family-text">
-          <div class="family-names">Christine,<br>Ben <span>&</span> Sophia.</div>
-          <p>Before the portfolio, the titles, and the builds, there's Christine, Ben, and Sophia. <strong>My family is everything to me.</strong> We stay busy, we stay together, and we never run out of things to do. We love to travel the world and discover new experiences together.</p>
-        </div>
-<div class="polaroid-scatter">
-          <div class="polaroid" style="top:10px;left:0px;transform:rotate(-4deg);" onclick="openPhoto('images/cooking-class-bangkok.jpg','Cooking Class · Bangkok, Thailand')">
-            <img src="images/cooking-class-bangkok.jpg" srcset="images/cooking-class-bangkok.jpg 2x" alt="Thailand">
-            <div class="polaroid-label">Cooking Class<br>Bangkok, Thailand</div>
-          </div>
-          <div class="polaroid" style="top:20px;left:290px;transform:rotate(3deg);" onclick="openPhoto('images/muay-thai-bangkok.jpg','Muay Thai Training · Bangkok, Thailand')">
-            <img src="images/muay-thai-bangkok.jpg" srcset="images/muay-thai-bangkok.jpg 2x" alt="Muay Thai">
-            <div class="polaroid-label">Muay Thai Training<br>Bangkok, Thailand</div>
-          </div>
-          <div class="polaroid" style="top:15px;left:570px;transform:rotate(-2deg);" onclick="openPhoto('images/gladiator-rome.jpg','Gladiator Experience · Rome, Italy')">
-            <img src="images/gladiator-rome.jpg" srcset="images/gladiator-rome.jpg 2x" alt="Family">
-            <div class="polaroid-label">Gladiator Experience<br>Rome, Italy</div>
-          </div>
-          <div class="polaroid" style="top:340px;left:20px;transform:rotate(4deg);" onclick="openPhoto('images/leaning-tower-pisa.jpg','Leaning Tower of Pisa · Pisa, Italy')">
-            <img src="images/leaning-tower-pisa.jpg" srcset="images/leaning-tower-pisa.jpg 2x" alt="Together">
-            <div class="polaroid-label">Leaning Tower of Pisa<br>Pisa, Italy</div>
-          </div>
-          <div class="polaroid" style="top:335px;left:300px;transform:rotate(-3deg);" onclick="openPhoto('images/cinque-terre-vernazza.jpg','Vernazza · Cinque Terre, Italy')">
-            <img src="images/cinque-terre-vernazza.jpg" srcset="images/cinque-terre-vernazza.jpg 2x" alt="Always Moving">
-            <div class="polaroid-label">Vernazza<br>Cinque Terre, Italy</div>
-          </div>
-          <div class="polaroid" style="top:345px;left:580px;transform:rotate(2deg);" onclick="openPhoto('images/sophias-first-communion.jpg','Sophia\'s First Communion')">
-            <img src="images/sophias-first-communion.jpg" srcset="images/sophias-first-communion.jpg 2x" alt="Home">
-            <div class="polaroid-label">Sophia's First Communion<br>Home</div>
-          </div>
-        </div>
+      <div class="section-label">The Numbers</div>
+      <h2 class="section-title">Impact that <span>speaks</span></h2>
+      <div class="wins-grid">
+        <div class="win-card"><div class="win-num">$3M</div><div class="win-label">FY26 Microsoft Unified Portfolio</div><div class="win-desc">Leading a five-member team supporting the State of New Jersey. Consistently delivering top-tier satisfaction, renewal, and secure cloud adoption across New Jersey and City of Philadelphia.</div></div>
+        <div class="win-card"><div class="win-num">$1.9M</div><div class="win-label">FY26 Renewals Landed</div><div class="win-desc">Continued to demonstrate Microsoft's value through deep customer partnerships and a relentless focus on outcomes.</div></div>
+        <div class="win-card"><div class="win-num">5x</div><div class="win-label">Hackathon Winner</div><div class="win-desc">Microsoft Global Hackathon winner. Fighting human trafficking, improving maternal health for women of color, and expanding accessibility through AI.</div></div>
+        <div class="win-card">
+  <div class="win-num" style="font-size:1.5rem;">Junior MBA</div>
+  <div class="win-label">Founder</div>
+  <div class="win-desc">Created the East Greenwich Junior MBA — an entrepreneurship &amp; financial literacy program for middle schoolers, culminating in <em>The Hornet's Nest</em>, a live Shark Tank-style pitch event.</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem;text-align:center;">
+    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">30</div><div style="font-size:.7rem;color:var(--gray);">Students</div></div>
+    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">16</div><div style="font-size:.7rem;color:var(--gray);">Weeks</div></div>
+    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">7</div><div style="font-size:.7rem;color:var(--gray);">Guest Speakers</div></div>
+  </div>
+</div>
+        <div class="win-card"><div class="win-num">$45K</div><div class="win-label">Raised for St. Jude</div><div class="win-desc">Co-led the auction at the Federal Give Golf Classic. $45K raised for kids fighting cancer.</div></div>
+        <div class="win-card"><div class="win-num">$114M+</div><div class="win-label">Lockheed Subcontracts</div><div class="win-desc">U.S. Navy and Air Force defense programs at Lockheed Martin. $12M+ in negotiated savings without compromising delivery or compliance.</div></div>
       </div>
     </div>
   </section>
 
-
-  <!-- LEADERSHIP -->
+  <!-- 4: LEADERSHIP -->
   <section class="slide slide-leadership">
     <div class="slide-inner">
       <div class="section-label">My Leadership Philosophy</div>
@@ -716,31 +702,6 @@ html, body {
       </div>
     </div>
   </section>
-  <!-- 4: WINS -->
-  <section class="slide slide-wins">
-    <div class="slide-inner">
-      <div class="section-label">The Numbers</div>
-      <h2 class="section-title">Impact that <span>speaks</span></h2>
-      <div class="wins-grid">
-        <div class="win-card"><div class="win-num">$3M</div><div class="win-label">FY26 Microsoft Unified Portfolio</div><div class="win-desc">Leading a five-member team supporting the State of New Jersey. Consistently delivering top-tier satisfaction, renewal, and secure cloud adoption across New Jersey and City of Philadelphia.</div></div>
-        <div class="win-card"><div class="win-num">$1.9M</div><div class="win-label">FY26 Renewals Landed</div><div class="win-desc">Continued to demonstrate Microsoft's value through deep customer partnerships and a relentless focus on outcomes.</div></div>
-        <div class="win-card"><div class="win-num">5x</div><div class="win-label">Hackathon Winner</div><div class="win-desc">Microsoft Global Hackathon winner. Fighting human trafficking, improving maternal health for women of color, and expanding accessibility through AI.</div></div>
-        <div class="win-card">
-  <div class="win-num" style="font-size:1.5rem;">Junior MBA</div>
-  <div class="win-label">Founder</div>
-  <div class="win-desc">Created the East Greenwich Junior MBA — an entrepreneurship &amp; financial literacy program for middle schoolers, culminating in <em>The Hornet's Nest</em>, a live Shark Tank-style pitch event.</div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem;text-align:center;">
-    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">30</div><div style="font-size:.7rem;color:var(--gray);">Students</div></div>
-    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">16</div><div style="font-size:.7rem;color:var(--gray);">Weeks</div></div>
-    <div><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">7</div><div style="font-size:.7rem;color:var(--gray);">Guest Speakers</div></div>
-  </div>
-</div>
-        <div class="win-card"><div class="win-num">$45K</div><div class="win-label">Raised for St. Jude</div><div class="win-desc">Co-led the auction at the Federal Give Golf Classic. $45K raised for kids fighting cancer.</div></div>
-        <div class="win-card"><div class="win-num">$114M+</div><div class="win-label">Lockheed Subcontracts</div><div class="win-desc">U.S. Navy and Air Force defense programs at Lockheed Martin. $12M+ in negotiated savings without compromising delivery or compliance.</div></div>
-      </div>
-    </div>
-  </section>
-
   <!-- 5: BUILDS -->
   <section class="slide slide-builds">
     <div class="slide-inner">
@@ -751,6 +712,46 @@ html, body {
         <div class="build-card" onclick="openLightbox('laser')"><div class="build-icon">✂️</div><div class="build-title">Cutting Edge Laser Works</div><div class="build-desc">Co-founded a custom laser engraving business. Client relations, production timelines, and quality control.</div><div class="build-stack"><span class="build-tech">Small Business</span><span class="build-tech">Operations</span><span class="build-tech">Manufacturing</span></div><div class="build-cta">View Details ↗</div></div>
         <div class="build-card" onclick="openLightbox('p4p')"><div class="build-icon">⚖️</div><div class="build-title">Pound for Pound</div><div class="build-desc">A 12-week weight loss competition PWA for a group of friends. Real users, real leaderboards, real motivation — powered by GenAI daily motivation via Azure Functions and the Anthropic API.</div><div class="build-stack"><span class="build-tech">Firebase</span><span class="build-tech">PWA</span><span class="build-tech">Azure Functions</span><span class="build-tech">GenAI</span><span class="build-tech">REST APIs</span></div><div class="build-cta">View Live Demo ↗</div></div>
         <div class="build-card" onclick="openLightbox('lyv')"><div class="build-icon">🏃</div><div class="build-title">Lyv in Motion</div><div class="build-desc">Personal wellness PWA built from scratch. If you're going to track your fitness journey, you might as well build the app yourself.</div><div class="build-stack"><span class="build-tech">PWA</span><span class="build-tech">Firebase</span><span class="build-tech">JavaScript</span></div><div class="build-cta">View Live Demo ↗</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7: FAMILY -->
+  <section class="slide slide-family">
+    <div class="slide-inner">
+      <div class="section-label">Home Base</div>
+      <h2 class="section-title">The reason I <span>Lyv</span>.</h2>
+      <div class="family-layout">
+        <div class="family-text">
+          <div class="family-names">Christine,<br>Ben <span>&</span> Sophia.</div>
+          <p>Before the portfolio, the titles, and the builds, there's Christine, Ben, and Sophia. <strong>My family is everything to me.</strong> We stay busy, we stay together, and we never run out of things to do. We love to travel the world and discover new experiences together.</p>
+        </div>
+<div class="polaroid-scatter">
+          <div class="polaroid" style="top:10px;left:0px;transform:rotate(-4deg);" onclick="openPhoto('images/cooking-class-bangkok.jpg','Cooking Class · Bangkok, Thailand')">
+            <img src="images/cooking-class-bangkok.jpg" srcset="images/cooking-class-bangkok.jpg 2x" alt="Thailand">
+            <div class="polaroid-label">Cooking Class<br>Bangkok, Thailand</div>
+          </div>
+          <div class="polaroid" style="top:20px;left:290px;transform:rotate(3deg);" onclick="openPhoto('images/muay-thai-bangkok.jpg','Muay Thai Training · Bangkok, Thailand')">
+            <img src="images/muay-thai-bangkok.jpg" srcset="images/muay-thai-bangkok.jpg 2x" alt="Muay Thai">
+            <div class="polaroid-label">Muay Thai Training<br>Bangkok, Thailand</div>
+          </div>
+          <div class="polaroid" style="top:15px;left:570px;transform:rotate(-2deg);" onclick="openPhoto('images/gladiator-rome.jpg','Gladiator Experience · Rome, Italy')">
+            <img src="images/gladiator-rome.jpg" srcset="images/gladiator-rome.jpg 2x" alt="Family">
+            <div class="polaroid-label">Gladiator Experience<br>Rome, Italy</div>
+          </div>
+          <div class="polaroid" style="top:340px;left:20px;transform:rotate(4deg);" onclick="openPhoto('images/leaning-tower-pisa.jpg','Leaning Tower of Pisa · Pisa, Italy')">
+            <img src="images/leaning-tower-pisa.jpg" srcset="images/leaning-tower-pisa.jpg 2x" alt="Together">
+            <div class="polaroid-label">Leaning Tower of Pisa<br>Pisa, Italy</div>
+          </div>
+          <div class="polaroid" style="top:335px;left:300px;transform:rotate(-3deg);" onclick="openPhoto('images/cinque-terre-vernazza.jpg','Vernazza · Cinque Terre, Italy')">
+            <img src="images/cinque-terre-vernazza.jpg" srcset="images/cinque-terre-vernazza.jpg 2x" alt="Always Moving">
+            <div class="polaroid-label">Vernazza<br>Cinque Terre, Italy</div>
+          </div>
+          <div class="polaroid" style="top:345px;left:580px;transform:rotate(2deg);" onclick="openPhoto('images/sophias-first-communion.jpg','Sophia\'s First Communion')">
+            <img src="images/sophias-first-communion.jpg" srcset="images/sophias-first-communion.jpg 2x" alt="Home">
+            <div class="polaroid-label">Sophia's First Communion<br>Home</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -818,7 +819,7 @@ function buildDots(containerId){
     const d = document.createElement('button');
     d.className = 'dot' + (i === 0 ? ' active' : '');
     d.setAttribute('aria-label', `Slide ${i+1}`);
-    if(containerId === 'dots') d.addEventListener('click', () => goToSlide(i));
+    if(containerId === 'dots' || containerId === 'dots-mobile') d.addEventListener('click', () => goToSlide(i));
     el.appendChild(d);
   }
 }
