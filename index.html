@@ -367,6 +367,8 @@ html, body {
     overflow-y: auto;
     overflow-x: hidden;
     height: auto;
+    scroll-snap-type: none !important;
+    -webkit-overflow-scrolling: touch;
   }
 
   #deck {
@@ -376,6 +378,7 @@ html, body {
     overflow: visible;
     transform: none !important;
     transition: none !important;
+    scroll-snap-type: none !important;
   }
 
   .slide {
@@ -383,7 +386,10 @@ html, body {
     min-height: 100svh;
     height: auto;
     flex-shrink: 0;
-    overflow-y: visible;
+    overflow-y: visible !important;
+    overflow-x: hidden;
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
     padding: 5rem 1.25rem 4rem;
     align-items: flex-start;
   }
