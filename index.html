@@ -173,9 +173,9 @@ html, body {
 .about-visual { display: flex; flex-direction: column; gap: .85rem; height: 100%; }
 .about-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); border-radius: 12px; padding: 1.15rem 1.3rem; transition: all .3s; flex: 1; }
 .about-card:hover { border-color: var(--teal); background: rgba(13,148,136,.06); transform: translateX(6px); }
-.about-card-icon { font-size: 1.3rem; margin-bottom: .4rem; }
-.about-card-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: .25rem; }
-.about-card-text { font-size: .87rem; color: var(--gray); line-height: 1.65; }
+.about-card-icon { font-size: clamp(1.3rem, 1.8vw, 1.6rem); margin-bottom: .4rem; }
+.about-card-title { font-family: 'Syne', sans-serif; font-size: clamp(1rem, 1.3vw, 1.15rem); font-weight: 700; margin-bottom: .25rem; white-space: nowrap; }
+.about-card-text { font-size: clamp(.9rem, 1.1vw, 1rem); color: var(--gray); line-height: 1.65; }
 
 /* ── CAREER ── */
 .timeline { position: relative; padding-left: 1.6rem; margin-top: 1.25rem; }
@@ -896,13 +896,18 @@ document.addEventListener('touchend', e => {
 function setupMobileSync(){
   const slides = document.querySelectorAll('.slide');
   const io = new IntersectionObserver(entries => {
+    let best = null, bestRatio = 0;
     entries.forEach(entry => {
-      if(entry.isIntersecting && entry.intersectionRatio >= 0.5){
-        current = Array.from(slides).indexOf(entry.target);
-        updateUI();
+      if(entry.intersectionRatio > bestRatio){
+        bestRatio = entry.intersectionRatio;
+        best = entry.target;
       }
     });
-  }, { root: null, threshold: 0.5 });
+    if(best){
+      current = Array.from(slides).indexOf(best);
+      updateUI();
+    }
+  }, { root: null, threshold: [0.1, 0.25, 0.5] });
   slides.forEach(s => io.observe(s));
 }
 // ── LIGHTBOX ──
@@ -1076,7 +1081,23 @@ window.addEventListener('resize', () => {
   }
 });
 
+// Mobile swipe between slides
+let msx = 0, msy = 0;
+document.addEventListener('touchstart', e => { msx = e.touches[0].clientX; msy = e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e => {
+  if(!isMobile()) return;
+  if(document.getElementById('lightbox').classList.contains('open')) return;
+  const dx = msx - e.changedTouches[0].clientX;
+  const dy = msy - e.changedTouches[0].clientY;
+  if(Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 60){
+    const slides = document.querySelectorAll('.slide');
+    if(dy > 0 && current < TOTAL - 1){ current++; slides[current].scrollIntoView({behavior:'smooth'}); updateUI(); }
+    if(dy < 0 && current > 0){ current--; slides[current].scrollIntoView({behavior:'smooth'}); updateUI(); }
+  }
+}, {passive:true});
+
 updateUI();
+setupMobileSync();
 </script>
 </body>
 </html>
