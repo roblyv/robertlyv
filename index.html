@@ -363,33 +363,32 @@ html, body {
    MOBILE: natural body scroll, top-down
 ───────────────────────────────────── */
 @media (max-width: 768px) {
-  html, body {
-    overflow-y: auto;
-    overflow-x: hidden;
+  html {
     height: auto;
-    scroll-snap-type: none !important;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
+  }
+  body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    overscroll-behavior-y: none;
   }
 
   #deck {
     flex-direction: column;
     width: 100vw;
-    height: auto;
-    overflow: visible;
+    height: auto !important;
+    overflow: visible !important;
     transform: none !important;
     transition: none !important;
-    scroll-snap-type: none !important;
   }
 
   .slide {
     width: 100vw;
-    min-height: 100svh;
-    height: auto;
+    height: auto !important;
+    min-height: 100vh;
     flex-shrink: 0;
-    overflow-y: visible !important;
-    overflow-x: hidden;
-    scroll-snap-align: none !important;
-    scroll-snap-stop: normal !important;
+    overflow: visible !important;
     padding: 5rem 1.25rem 4rem;
     align-items: flex-start;
   }
