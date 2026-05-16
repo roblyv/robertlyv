@@ -843,7 +843,14 @@ function goToSlide(n){
   n = Math.max(0, Math.min(TOTAL - 1, n));
   if(isMobile()){
     const slides = document.querySelectorAll('.slide');
-    if(slides[n]) slides[n].scrollIntoView({ behavior: 'smooth' });
+    if(slides[n]){
+      // Calculate position manually to avoid scrollIntoView snap behavior
+      const rect = slides[n].getBoundingClientRect();
+      const scrollTop = window.pageYOffset + rect.top;
+      window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    }
+    current = n;
+    updateUI();
     return;
   }
   current = n;
@@ -910,7 +917,12 @@ function setupMobileSync(){
     });
     if(best && bestRatio >= 0.3){
       const idx = Array.from(slides).indexOf(best);
-      if(idx !== current){ current = idx; updateUI(); }
+      if(idx !== current){
+        current = idx;
+        // Only update dots, never trigger scroll
+        document.querySelectorAll('#dots-mobile .dot').forEach((d,i) => d.classList.toggle('active', i === current));
+        document.getElementById('currentSlide').textContent = current + 1;
+      }
     }
   }, { root: null, threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5] });
   slides.forEach(s => io.observe(s));
@@ -1086,20 +1098,8 @@ window.addEventListener('resize', () => {
   }
 });
 
-// Mobile swipe between slides
-let msx = 0, msy = 0;
-document.addEventListener('touchstart', e => { msx = e.touches[0].clientX; msy = e.touches[0].clientY; }, {passive:true});
-document.addEventListener('touchend', e => {
-  if(!isMobile()) return;
-  if(document.getElementById('lightbox').classList.contains('open')) return;
-  const dx = msx - e.changedTouches[0].clientX;
-  const dy = msy - e.changedTouches[0].clientY;
-  if(Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 60){
-    const slides = document.querySelectorAll('.slide');
-    if(dy > 0 && current < TOTAL - 1){ current++; slides[current].scrollIntoView({behavior:'smooth'}); updateUI(); }
-    if(dy < 0 && current > 0){ current--; slides[current].scrollIntoView({behavior:'smooth'}); updateUI(); }
-  }
-}, {passive:true});
+
+
 
 updateUI();
 setupMobileSync();
